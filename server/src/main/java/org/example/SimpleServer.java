@@ -87,7 +87,7 @@ public class SimpleServer extends AbstractServer {
 	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		
+		System.out.println("test");
 	}
 	public void sendToAllClients (Task message){
 		try {
