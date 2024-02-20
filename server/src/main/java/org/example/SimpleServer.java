@@ -87,36 +87,7 @@ public class SimpleServer extends AbstractServer {
 	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		String message = (String) msg;
-		Task t1 = null;
-		try{
-			List<Task> tasks= getAllTasks();
-			for(Task task: tasks){
-				if(message.startsWith("pick " + task.getTaskName())&& task.getState().equals("in progress")){
-					client.sendToClient(task.getTaskName()+ " is already in progress");
-				} else if(message.startsWith("pick " + task.getTaskName())){
-					task.setState("in progress");
-					client.sendToClient(task.getTaskName() + " was picked and now in progress");
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		System.out.println(message);
-		try{
-			if(message.isBlank()){
-				message = "Error, empty message";
-				client.sendToClient(message);
-			} else if (message.startsWith("pick task1")) {
-				message = "task1 was picked";
-				client.sendToClient(message);
-			}
-			else{
-				client.sendToClient(message);
-			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		
 	}
 	public void sendToAllClients (Task message){
 		try {
