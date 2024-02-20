@@ -14,10 +14,6 @@ public class Task implements Serializable
     LocalDateTime SubmissionTime;
     String Volunteer;
 
-    public Task(){
-
-    }
-
     public Task(int taskID, String taskName, String taskDescription, String userName, int userID, String state,LocalDateTime submissionTime, String volunteer) {
         TaskID = taskID;
         TaskName = taskName;
