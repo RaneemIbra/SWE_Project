@@ -5,12 +5,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
 import java.io.IOException;
 public class PrimaryController {
-
+    @FXML
+    public AnchorPane rootBane;
     @FXML
     private Button ShowTaskListButton;
 
@@ -35,9 +37,8 @@ public class PrimaryController {
     void onShowTaskList(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("TasksList.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.show();
+            AnchorPane tasksListPane = loader.load();
+            rootBane.getChildren().setAll(tasksListPane);
         } catch (IOException e) {
             e.printStackTrace();
         }

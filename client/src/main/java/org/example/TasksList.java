@@ -1,18 +1,26 @@
 package org.example;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import org.w3c.dom.events.Event;
+import javafx.event.ActionEvent;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class TasksList implements Initializable {
-
+    @FXML
+    public Button homePageBTN;
+    @FXML
+    public AnchorPane rootBane;
     @FXML
     private ListView<String> TasksList;
     LocalDateTime now = LocalDateTime.now();
@@ -50,5 +58,16 @@ public class TasksList implements Initializable {
         alert.setHeaderText("Task Details: " );
         alert.setContentText(task);
         alert.showAndWait();
+    }
+
+    @FXML
+    void onHomePageClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("primary.fxml"));
+            AnchorPane PrimaryBane = loader.load();
+            rootBane.getChildren().setAll(PrimaryBane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
