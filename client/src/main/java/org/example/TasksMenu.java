@@ -15,6 +15,13 @@ public class TasksMenu {
 
     public Task menuSelectedTask;
 
+    public TasksMenu(){
+
+    }
+    public TasksMenu(Task menuSelectedTask) {
+        this.menuSelectedTask = menuSelectedTask;
+    }
+
     public Task getSelectedTask() {
         return menuSelectedTask;
     }
@@ -33,7 +40,9 @@ public class TasksMenu {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Task Details");
         alert.setHeaderText("Task Details: " );
-        alert.setContentText(menuSelectedTask.toString());
+        if(menuSelectedTask != null){
+            alert.setContentText(menuSelectedTask.toString());
+        }
         alert.showAndWait();
     }
 
