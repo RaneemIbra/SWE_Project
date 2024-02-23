@@ -2,9 +2,12 @@ package org.example;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
+import javax.persistence.*;
+@Entity
 public class Task implements Serializable
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int TaskID;
     String TaskName;
     String TaskDescription;
@@ -23,6 +26,10 @@ public class Task implements Serializable
         State = state;
         SubmissionTime = submissionTime;
         Volunteer = volunteer;
+    }
+
+    public Task() {
+
     }
 
     public int getTaskID() {

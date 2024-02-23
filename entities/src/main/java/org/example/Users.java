@@ -1,10 +1,14 @@
 package org.example;
 
 import java.io.Serializable;
+import javax.persistence.*;
 
+@Entity
 public class Users implements Serializable {
-    String FullName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int UserID;
+    String FullName;
     String EmailAddress;
     String HomeAddress;
     int PhoneNumber;
@@ -19,6 +23,10 @@ public class Users implements Serializable {
         PhoneNumber = phoneNumber;
         GroupID = groupID;
         Title = title;
+    }
+
+    public Users() {
+
     }
 
     public String getFullName() {

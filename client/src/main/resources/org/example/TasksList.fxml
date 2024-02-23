@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootBane" prefHeight="515.0" prefWidth="600.0" maxHeight="515.0" maxWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.TasksList">
+<AnchorPane fx:id="rootBane" maxHeight="515.0" maxWidth="600.0" minHeight="515.0" minWidth="600.0" prefHeight="515.0" prefWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.TasksList">
    <children>
       <ListView fx:id="TasksList" layoutX="70.0" layoutY="79.0" prefHeight="257.0" prefWidth="461.0" style="-fx-background-color: rgb(200,200,200);" />
       <Label layoutX="263.0" layoutY="29.0" text="Tasks" textFill="#5cff00" underline="true">
