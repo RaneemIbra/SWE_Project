@@ -1,8 +1,6 @@
 package org.example;
 
-
-
-import com.sun.net.httpserver.Request;
+import com.google.protobuf.Empty;
 import org.example.ocsf.AbstractServer;
 import org.example.ocsf.ConnectionToClient;
 import org.example.ocsf.SubscribedClient;
@@ -10,13 +8,11 @@ import org.example.ocsf.SubscribedClient;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.jboss.logging.Param;
 
-import javax.persistence.TypedQuery;
+import javax.persistence.Index;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -27,29 +23,92 @@ import java.util.*;
 
 public class SimpleServer extends AbstractServer {
 	private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
+	private static Session session;
+	private static SessionFactory sessionFactory = getSessionFactory();
 
-	public SimpleServer(int port) {
+	public SimpleServer(int port){
 		super(port);
+		try{
+			session = sessionFactory.openSession();
+			session.beginTransaction();
+			generateUsersTable();
+			generateTasksTable();
+			session.getTransaction().commit();
+		} catch (Exception var5) {
+			if (session != null && session.getTransaction().isActive()) {
+				session.getTransaction().rollback();
+			}
+			var5.printStackTrace();
+		}finally {
+			if(session!=null){
+				session.close();
+			}
+		}
 	}
 
-	public static Session session;
+	private static void printAllTasks() {
+		List<Task> tasks = getAllTasks();
+		for(Task task : tasks){
+			System.out.println(task.getTaskName());
+		}
+	}
+
 	public static SessionFactory getSessionFactory() throws HibernateException {
 		Configuration configuration = new Configuration();
 		configuration.addAnnotatedClass(Task.class);
 		configuration.addAnnotatedClass(Users.class);
-		ServiceRegistry serviceRegistry = (new StandardServiceRegistryBuilder()).applySettings(configuration.getProperties()).build();
+		ServiceRegistry serviceRegistry = (new StandardServiceRegistryBuilder())
+				.applySettings(configuration.getProperties()).build();
 		return configuration.buildSessionFactory(serviceRegistry);
 	}
 
-	private static List<Task> getAllTasks() throws Exception {
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<Task> query = builder.createQuery(Task.class);
-		query.from(Task.class);
-		List<Task> data = session.createQuery(query).getResultList();
-		return data;
+	private static List<Task> getAllTasks(){
+		try {
+			session = sessionFactory.openSession();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Task> query = builder.createQuery(Task.class);
+			Root<Task> root = query.from(Task.class);
+			query.select(root);
+            return session.createQuery(query).getResultList();
+		}catch (Exception e){
+			e.printStackTrace();
+			if (session != null && session.getTransaction().isActive()) {
+				session.getTransaction().rollback();
+			}
+		}finally {
+			if(session!=null){
+				session.close();
+			}
+		}
+		return null;
 	}
 
-	public static void generateTasksTable() throws Exception{
+	private static void modifyTask(int TaskID){
+		try {
+			session = sessionFactory.openSession();
+			session.beginTransaction();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Task> query = builder.createQuery(Task.class);
+			Root<Task> root = query.from(Task.class);
+			query.where(builder.equal(root.get("TaskID"),TaskID));
+			List<Task> tasks = session.createQuery(query).getResultList();
+			for(Task task : tasks){
+				task.setState("in progress");
+			}
+			session.getTransaction().commit();
+		}catch (Exception e){
+			e.printStackTrace();
+			if (session != null && session.getTransaction().isActive()) {
+				session.getTransaction().rollback();
+			}
+		}finally {
+			if(session!=null){
+				session.close();
+			}
+		}
+	}
+
+	public static void generateTasksTable() {
 		LocalDateTime now = LocalDateTime.now();
 		Task task1 = new Task(1829371289,"Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none");
 		Task task2 = new Task(1829371284,"Task2","Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none");
@@ -66,7 +125,7 @@ public class SimpleServer extends AbstractServer {
 		session.flush();
 	}
 
-	public static void generateUsersTable() throws Exception{
+	public static void generateUsersTable() {
 		Users user1 = new Users("Eden Daddo", 2128219878, "edenDado@gmail.com", "Haifa, Remot Remez, Haviva Reich 54",547823641, 1928312093, "User");
 		Users user2 = new Users("Karen Yakov", 2127726318, "karenYakov@gmail.com", "Haifa, Remot Alon, Dovnov 18",547374388, 1928312093, "User");
 		Users user3 = new Users("Leen Yakov", 1823718982, "leenYakov@gmail.com", "Haifa, Remot Alon, Dovnov 16",518723618, 1928312093, "User");
@@ -87,7 +146,22 @@ public class SimpleServer extends AbstractServer {
 	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		System.out.println("test");
+		try {
+			String message = (String) msg;
+			if(message.equals("get tasks")){
+				client.sendToClient(getAllTasks());
+				System.out.println("suck");
+			}else if(message.startsWith("modify")){
+				String taskid= message.split(" ")[1];
+				modifyTask(Integer.parseInt(taskid));
+				client.sendToClient(getAllTasks());
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			if (session != null && session.getTransaction().isActive()) {
+				session.getTransaction().rollback();
+			}
+		}
 	}
 	public void sendToAllClients (Task message){
 		try {
@@ -96,6 +170,7 @@ public class SimpleServer extends AbstractServer {
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
+
 		}
 	}
 

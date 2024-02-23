@@ -3,6 +3,7 @@ package org.example;
 import org.example.ocsf.AbstractClient;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class SimpleClient extends AbstractClient {
     private static SimpleClient client = null;
@@ -12,8 +13,7 @@ public class SimpleClient extends AbstractClient {
 
     @Override
     protected void handleMessageFromServer(Object msg) {
-        String message= (String) msg;
-        System.out.println(message);
+        TasksList.tasks = (List<Task>) msg;
     }
 
     public static SimpleClient getClient() {
