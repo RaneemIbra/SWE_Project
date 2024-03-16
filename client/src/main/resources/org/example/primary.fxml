@@ -1,22 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.effect.Bloom?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootBane" maxHeight="515.0" maxWidth="600.0" minHeight="515.0" minWidth="600.0" prefHeight="515.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.PrimaryController">
+<AnchorPane fx:id="rootBane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.PrimaryController">
    <children>
-      <ImageView fitHeight="515.0" fitWidth="600.0" layoutX="44.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="671.0" fitWidth="814.0" pickOnBounds="true">
          <image>
-            <Image url="@images/images.png" />
+            <Image url="@images/download.png" />
          </image>
       </ImageView>
-      <Button fx:id="ShowTaskListButton" layoutX="152.0" layoutY="376.0" mnemonicParsing="false" onAction="#onShowTaskList" prefHeight="101.0" prefWidth="298.0" style="-fx-background-color: rgb(230,230,250);" text="Show Task List">
+      <Button fx:id="ShowTaskListButton" layoutX="254.0" layoutY="370.0" mnemonicParsing="false" onAction="#onShowTaskList" prefHeight="128.0" prefWidth="312.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Show Task List/ volunteer" textFill="WHITE" underline="true" wrapText="true">
          <font>
             <Font name="System Bold" size="34.0" />
          </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="EmergencyBTN" layoutX="292.0" layoutY="540.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#OnEmergency" prefHeight="82.0" prefWidth="230.0" style="-fx-background-color: red;" text="EMERGENCY BUTTON!" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Hyperlink fx:id="LogOutLink" layoutX="14.0" layoutY="14.0" onAction="#onLogOutClick" text="Log Out" textFill="WHITE" underline="true" wrapText="true">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Hyperlink>
+      <Button fx:id="HelpFormBTN" layoutX="254.0" layoutY="92.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#OnHelpForm" prefHeight="128.0" prefWidth="312.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-border-radius: 5px;" text="Fill A Help Form" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="34.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="PendingTasksBTN" layoutX="50.0" layoutY="92.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onViewPendingTasks" prefHeight="128.0" prefWidth="312.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-border-radius: 5px;" text="View Pending Tasks" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="System Bold" size="34.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="EmergecyReportBTN" layoutX="448.0" layoutY="370.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#OnEmergencyReport" prefHeight="128.0" prefWidth="312.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-border-radius: 5px;" text="View Emergency Report" textFill="WHITE" wrapText="true">
+         <font>
+            <Font name="System Bold" size="34.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="showMyTasks" layoutX="254.0" layoutY="231.0" mnemonicParsing="false" onAction="#onShowMyTasks" prefHeight="128.0" prefWidth="312.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Show My Tasks" textFill="WHITE" underline="true" wrapText="true">
+         <font>
+            <Font name="System Bold" size="34.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
    </children>
 </AnchorPane>

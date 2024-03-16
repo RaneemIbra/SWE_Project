@@ -150,11 +150,15 @@ public class SimpleServer extends AbstractServer {
 			String message = (String) msg;
 			if(message.equals("get tasks")){
 				client.sendToClient(getAllTasks());
-				System.out.println("suck");
 			}else if(message.startsWith("modify")){
 				String taskid= message.split(" ")[1];
 				modifyTask(Integer.parseInt(taskid));
 				client.sendToClient(getAllTasks());
+			} else if (message.equals("add client")) {
+				SubscribedClient connection = new SubscribedClient(client);
+				SubscribersList.add(connection);
+				message="client added successfully";
+				client.sendToClient(message);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
