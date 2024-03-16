@@ -1,24 +1,26 @@
 package org.example;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class TasksList implements Initializable {
+
+    @FXML
+    private Label tasksLabel;
     @FXML
     public Button homePageBTN;
+    @FXML
+    private Button EmergencyBTN;
     @FXML
     private Button PickTaskBTN;
 
@@ -30,14 +32,8 @@ public class TasksList implements Initializable {
     private ListView<String> TasksList;
     public static List<Task> tasks =new ArrayList<>();
     private Task selectedTask = null;
-    LocalDateTime now = LocalDateTime.now();
-//    Task task1 = new Task(15,"Task1", "Walk the pets", "Eden Daddo", 1, "Pending", now, "none");
-//    Task task2 = new Task(19,"Task2","Buy medical equipment", "Leen Yakov", 2, "Pending", now, "none");
-//    Task task3 = new Task(13,"Task3","Help buy groceries", "Leen Yakov", 3, "Pending", now, "none");
-//    Task task4 = new Task(12,"Task4","Clean the house", "Karen Yakov", 4, "Pending", now, "none");
-//    Task task5 = new Task(11,"Task5","Take care of the children", "Karen Yakov", 5, "Pending", now, "none");
-//    Task task6 = new Task(10,"Task6","Give a ride", "Eden daddo", 6, "Pending", now, "none");
-//    Task[] tasks = {task1,task2,task3,task4,task5,task6};
+
+    //private boolean test1= true;
     public void initialize(URL arg0, ResourceBundle arg1){
         while (tasks.isEmpty()){
             try {
@@ -71,16 +67,28 @@ public class TasksList implements Initializable {
     }
     @FXML
     void onPickTask(ActionEvent event) throws IOException {
-        Alert alert = new Alert((Alert.AlertType.INFORMATION));
-        alert.setTitle("Task Volunteering");
-        alert.setHeaderText(selectedTask.getTaskName());
-        SimpleClient.getClient().sendToServer("modify " + selectedTask.getTaskID());
-        if(selectedTask.getState().equals("Pending")){
-            alert.setContentText(selectedTask.getTaskName() + " was picked");
-        } else{
-            alert.setContentText(selectedTask.getTaskName() + " is already in progress");
-        }
-        alert.showAndWait();
+        Alert alert1 = new Alert((Alert.AlertType.CONFIRMATION));
+        Alert alert2 = new Alert((Alert.AlertType.INFORMATION));
+        alert1.setTitle("Task Volunteering");
+        alert1.setHeaderText(selectedTask.getTaskName());
+        alert1.setContentText("Do you want to pick " + selectedTask.getTaskName() + "?");
+        alert2.setTitle("Task Volunteering");
+        alert2.setHeaderText(selectedTask.getTaskName());
+        alert1.showAndWait().ifPresent(response ->{
+            if(response== ButtonType.OK && selectedTask.getState().equals("Pending")){
+                try {
+                    SimpleClient.getClient().sendToServer("modify " + selectedTask.getTaskID());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                alert2.setContentText(selectedTask.getTaskName() + " was picked");
+                alert2.showAndWait();
+            }
+            else if(response==ButtonType.OK && selectedTask.getState().equals("in progress")){
+                alert2.setContentText(selectedTask.getTaskName() + " is already in progress");
+                alert2.showAndWait();
+            }
+        });
     }
 
     @FXML
@@ -105,5 +113,10 @@ public class TasksList implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    void OnEmergency(ActionEvent event) {
+
     }
 }
