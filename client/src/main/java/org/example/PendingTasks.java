@@ -46,8 +46,8 @@ public class PendingTasks implements Initializable {
             if(event.getButton().equals(MouseButton.PRIMARY)&&event.getClickCount()==2){
                 if(S1!=null){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Report details");
-                    alert.setHeaderText("Report Details: " );
+                    alert.setTitle("Pending Task details");
+                    alert.setHeaderText("Pending Task Details: " );
                     alert.showAndWait();
                 }
             }
