@@ -112,6 +112,12 @@ public class PrimaryController implements Initializable {
 
     @FXML
     void onShowMyTasks(ActionEvent event) {
-        System.out.println("Hello from my tasks");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("MyTasks.fxml"));
+            AnchorPane PrimaryBane = loader.load();
+            rootBane.getChildren().setAll(PrimaryBane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
@@ -54,6 +56,9 @@ public class TasksList implements Initializable {
                         break;
                     }
                 }
+            }
+            if(event.getButton().equals(MouseButton.PRIMARY)&&event.getClickCount()==2){
+                showAlert(selectedTaskName);
             }
         });
     }
