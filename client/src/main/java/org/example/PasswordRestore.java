@@ -9,13 +9,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 
-public class Register {
-
-    @FXML
-    private AnchorPane rootBane;
-
-    @FXML
-    private TextField AddressTF;
+public class PasswordRestore {
 
     @FXML
     private TextField EmailAddressTF;
@@ -27,42 +21,34 @@ public class Register {
     private TextField PasswordTF;
 
     @FXML
-    private TextField PhoneNumTF;
+    private TextField PasswordTFConfirm;
 
     @FXML
     private Button SubmitBTN;
 
     @FXML
-    private TextField UserIDTF;
-
-    @FXML
-    private TextField GroupIDTF;
+    private AnchorPane rootBane;
     @FXML
     private Button LogInPage;
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        System.out.println("working");
+        System.out.println("emergency working");
     }
 
     @FXML
     void OnPasswordText(ActionEvent event) {
-        System.out.println("working1");
+        System.out.println("password working");
     }
 
     @FXML
-    void onAddressText(ActionEvent event) {
-        System.out.println("working2");
+    void OnPasswordTextConfirm(ActionEvent event) {
+        System.out.println("confirm working");
     }
 
     @FXML
     void onEmailAddressText(ActionEvent event) {
-        System.out.println("working3");
-    }
-
-    @FXML
-    void onPhoneNumText(ActionEvent event) {
-        System.out.println("working4");
+        System.out.println("email working");
     }
 
     @FXML
@@ -74,16 +60,6 @@ public class Register {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @FXML
-    void onUserIDText(ActionEvent event) {
-        System.out.println("working6");
-    }
-
-    @FXML
-    void onGroupIDTF(ActionEvent event) {
-        System.out.println("hello from group id");
     }
 
     @FXML

@@ -22,6 +22,8 @@ public class LogIn {
 
     @FXML
     private Button LogInBTN;
+    @FXML
+    private Hyperlink ForgotYourPasswordLink;
 
     @FXML
     private TextField PasswordTF;
@@ -65,4 +67,14 @@ public class LogIn {
         }
     }
 
+    @FXML
+    void onForgotYourPasswordLink(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PasswordRestore.fxml"));
+            AnchorPane PrimaryBane = loader.load();
+            rootBane.getChildren().setAll(PrimaryBane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
