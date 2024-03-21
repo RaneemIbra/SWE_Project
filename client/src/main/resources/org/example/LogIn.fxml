@@ -23,7 +23,7 @@
             <Rectangle2D />
          </viewport>
       </ImageView>
-      <Label layoutX="372.0" layoutY="58.0" prefHeight="51.0" prefWidth="73.0" text="Log In" textFill="WHITE" underline="true">
+      <Label layoutX="371.0" layoutY="56.0" prefHeight="51.0" prefWidth="73.0" text="Log In" textFill="WHITE" underline="true">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
@@ -38,7 +38,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="EmailAddressTF" layoutX="300.0" layoutY="170.0" onAction="#onEmailAddressText" prefHeight="39.0" prefWidth="230.0" promptText="Email Adress" style="-fx-background-color: white;">
+      <TextField fx:id="EmailAddressTF" layoutX="292.0" layoutY="170.0" onAction="#onEmailAddressText" prefHeight="39.0" prefWidth="230.0" promptText="Email Adress" style="-fx-background-color: white;">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -46,7 +46,7 @@
             <Cursor fx:constant="TEXT" />
          </cursor>
       </TextField>
-      <TextField fx:id="PasswordTF" layoutX="300.0" layoutY="274.0" onAction="#OnPasswordText" prefHeight="39.0" prefWidth="230.0" promptText="Password" style="-fx-background-color: white;">
+      <TextField fx:id="PasswordTF" layoutX="292.0" layoutY="274.0" onAction="#OnPasswordText" prefHeight="39.0" prefWidth="230.0" promptText="Password" style="-fx-background-color: white;">
          <cursor>
             <Cursor fx:constant="TEXT" />
          </cursor>
@@ -77,7 +77,12 @@
             <Font name="System Bold" size="19.0" />
          </font>
       </Button>
-      <Hyperlink fx:id="RegisterLink" layoutX="241.0" layoutY="404.0" onAction="#onRegisterLinkClick" text="Don't have an account? Click to register" textFill="WHITE" underline="true">
+      <Hyperlink fx:id="RegisterLink" layoutX="241.0" layoutY="365.0" onAction="#onRegisterLinkClick" text="Don't have an account? Click to register" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Hyperlink>
+      <Hyperlink fx:id="ForgotYourPasswordLink" layoutX="312.0" layoutY="426.0" onAction="#onForgotYourPasswordLink" text="Forgot your password?" textFill="WHITE" underline="true">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
