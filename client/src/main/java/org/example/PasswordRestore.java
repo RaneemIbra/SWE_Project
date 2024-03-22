@@ -33,7 +33,8 @@ public class PasswordRestore {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        System.out.println("emergency working");
+        App appInstance = new App(); //this may cause issues, not sure about it
+        appInstance.EmergencyClick();
     }
 
     @FXML

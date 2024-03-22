@@ -50,7 +50,8 @@ public class EmergencyReports implements Initializable {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        System.out.println("hello from emergency");
+        App appInstance = new App(); //this may cause issues, not sure about it
+        appInstance.EmergencyClick();
     }
 
     @FXML

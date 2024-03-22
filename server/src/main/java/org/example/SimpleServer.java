@@ -159,6 +159,8 @@ public class SimpleServer extends AbstractServer {
 				SubscribersList.add(connection);
 				message="client added successfully";
 				client.sendToClient(message);
+			} else if (message.equals("Emergency")) {
+				System.out.println("we have an emergency");
 			}
 		}catch (Exception e){
 			e.printStackTrace();

@@ -63,6 +63,14 @@ public class App extends Application {
         });
     }
 
+    public void EmergencyClick(){
+        try {
+            SimpleClient.getClient().sendToServer("Emergency");
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
         launch();
     }
