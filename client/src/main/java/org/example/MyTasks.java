@@ -68,7 +68,8 @@ public class MyTasks implements Initializable {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-
+        App appInstance = new App(); //this may cause issues, not sure about it
+        appInstance.EmergencyClick();
     }
 
     @FXML

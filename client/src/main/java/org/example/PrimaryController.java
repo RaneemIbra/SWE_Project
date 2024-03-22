@@ -62,7 +62,8 @@ public class PrimaryController implements Initializable {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        System.out.println("hello");
+        App appInstance = new App(); //this may cause issues, not sure about it
+        appInstance.EmergencyClick();
     }
 
 

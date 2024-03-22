@@ -42,7 +42,8 @@ public class Register {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        System.out.println("working");
+        App appInstance = new App(); //this may cause issues, not sure about it
+        appInstance.EmergencyClick();
     }
 
     @FXML

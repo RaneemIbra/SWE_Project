@@ -32,7 +32,8 @@ public class LogIn {
 
     @FXML
     void OnEmergencyClick(ActionEvent event) {
-        System.out.println("also working1");
+        App appInstance = new App(); //this may cause issues, not sure about it
+        appInstance.EmergencyClick();
     }
 
     @FXML
