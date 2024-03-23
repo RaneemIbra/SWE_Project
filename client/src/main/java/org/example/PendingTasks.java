@@ -56,7 +56,7 @@ public class PendingTasks implements Initializable {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        App appInstance = new App(); //this may cause issues, not sure about it
+        App appInstance = App.getInstance();
         appInstance.EmergencyClick();
     }
 
