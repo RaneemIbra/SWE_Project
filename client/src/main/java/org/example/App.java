@@ -18,10 +18,17 @@ import org.greenrobot.eventbus.Subscribe;
  * JavaFX App
  */
 public class App extends Application {
+    private static App single_instance = null;
 
     private static Scene scene;
     private SimpleClient client;
 
+    public static synchronized  App getInstance(){
+        if(single_instance==null){
+            single_instance = new App();
+        }
+        return single_instance;
+    }
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
