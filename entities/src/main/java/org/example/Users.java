@@ -1,21 +1,26 @@
 package org.example;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import javax.persistence.*;
 
 @Entity
 public class Users implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int UserID;
+    int UserID;   //the set id should be sufficient, no need for generated id
     String FullName;
+    String Password;
     String EmailAddress;
     String HomeAddress;
     int PhoneNumber;
     int GroupID;
     String Title;
+    private String salt;
 
-    public Users(String fullName, int userID, String emailAddress, String homeAddress, int phoneNumber, int groupID, String title) {
+    public Users(String fullName, String password, int userID, String emailAddress, String homeAddress, int phoneNumber, int groupID, String title) {
         FullName = fullName;
         UserID = userID;
         EmailAddress = emailAddress;
@@ -23,10 +28,39 @@ public class Users implements Serializable {
         PhoneNumber = phoneNumber;
         GroupID = groupID;
         Title = title;
+        Password = password;
     }
 
     public Users() {
+        FullName = "";
+        UserID = 0;
+        EmailAddress = "";
+        HomeAddress = "";
+        PhoneNumber = 0;
+        GroupID = 0;
+        Title = "User";
+        Password = "";
+    }
 
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setPassword(String password) {
+        try {
+            SecureRandom secureRandom = new SecureRandom();
+            byte[] saltBytes = new byte[16];
+            secureRandom.nextBytes(saltBytes);
+            this.salt = bytesToHex(saltBytes);
+
+            String passwordWithSalt = password + salt;
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] hashBytes = digest.digest(passwordWithSalt.getBytes());
+            this.Password = bytesToHex(hashBytes);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getFullName() {
@@ -83,5 +117,13 @@ public class Users implements Serializable {
 
     public void setTitle(String title) {
         Title = title;
+    }
+
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 }

@@ -29,7 +29,8 @@ public class EmergencyReports implements Initializable {
 
     @FXML
     private Button homePageBTN;
-    public void initialize(URL arg0, ResourceBundle arg1){
+
+    public void initialize(URL arg0, ResourceBundle arg1) {
         EmergencyReports.getItems().add("Report1");
         EmergencyReports.getItems().add("Report2");
         EmergencyReports.getItems().add("Report3");
@@ -37,11 +38,11 @@ public class EmergencyReports implements Initializable {
         EmergencyReports.getItems().add("Report5");
         this.EmergencyReports.setOnMouseClicked(event -> {
             String selectedTaskName = this.EmergencyReports.getSelectionModel().getSelectedItem();
-            if(event.getButton().equals(MouseButton.PRIMARY)&&event.getClickCount()==2){
-                if(selectedTaskName!=null){
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (selectedTaskName != null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Report details");
-                    alert.setHeaderText("Report Details: " );
+                    alert.setHeaderText("Report Details: ");
                     alert.showAndWait();
                 }
             }

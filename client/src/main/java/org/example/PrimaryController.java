@@ -34,20 +34,22 @@ public class PrimaryController implements Initializable {
     private Button HelpFormBTN;
 
     public boolean test1 = true;
+
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
-        if(test1){
+        if (test1) {
             ShowTaskListButton.setTranslateX(-210);
             HelpFormBTN.setTranslateX(204);
             PendingTasksBTN.setVisible(true);
             EmergecyReportBTN.setVisible(true);
-        }else{
+        } else {
             ShowTaskListButton.setTranslateX(0);
             HelpFormBTN.setTranslateX(0);
             PendingTasksBTN.setVisible(false);
             EmergecyReportBTN.setVisible(false);
         }
     }
+
     @FXML
     void onShowTaskList(ActionEvent event) {
         try {

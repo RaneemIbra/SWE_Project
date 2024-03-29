@@ -3,9 +3,9 @@ package org.example;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
+
 @Entity
-public class Task implements Serializable
-{
+public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int TaskID;
@@ -17,7 +17,7 @@ public class Task implements Serializable
     LocalDateTime SubmissionTime;
     String Volunteer;
 
-    public Task(int taskID, String taskName, String taskDescription, String userName, int userID, String state,LocalDateTime submissionTime, String volunteer) {
+    public Task(int taskID, String taskName, String taskDescription, String userName, int userID, String state, LocalDateTime submissionTime, String volunteer) {
         TaskID = taskID;
         TaskName = taskName;
         TaskDescription = taskDescription;
@@ -97,7 +97,7 @@ public class Task implements Serializable
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return String.format("Task ID: %d\nTask Description: %s\nUser Name: %s\nUser ID: %d\nState: %s\nVolunteer: %s", TaskID, TaskDescription, UserName, UserID, State, Volunteer);
     }
 }
