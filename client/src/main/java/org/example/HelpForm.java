@@ -36,14 +36,15 @@ public class HelpForm implements Initializable {
     @FXML
     private Button homePageBTN;
 
-    private final String[] help={"Walk The Dog","Buy Groceries" , "Help Clean The House" ,
-            "Buy Medications" , "Give A Ride" , "Maw the Lawn"};
-    public void initialize(URL arg0, ResourceBundle arg1){
+    private final String[] help = {"Walk The Dog", "Buy Groceries", "Help Clean The House",
+            "Buy Medications", "Give A Ride", "Maw the Lawn"};
+
+    public void initialize(URL arg0, ResourceBundle arg1) {
         HelpRequests.getItems().addAll(help);
         //HelpRequests.setOnAction(this::getHelp);
     }
 
-//    public void getHelp(ActionEvent event){
+    //    public void getHelp(ActionEvent event){
 //        String Help = HelpRequests.getValue();
 //    }
     @FXML

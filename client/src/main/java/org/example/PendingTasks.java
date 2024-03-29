@@ -35,7 +35,8 @@ public class PendingTasks implements Initializable {
     private AnchorPane rootBane;
 
     public String S1;
-    public void initialize(URL arg0, ResourceBundle arg1){
+
+    public void initialize(URL arg0, ResourceBundle arg1) {
         PendingTasks.getItems().add("task1");
         PendingTasks.getItems().add("task2");
         PendingTasks.getItems().add("task3");
@@ -43,11 +44,11 @@ public class PendingTasks implements Initializable {
         PendingTasks.getItems().add("task5");
         this.PendingTasks.setOnMouseClicked(event -> {
             S1 = this.PendingTasks.getSelectionModel().getSelectedItem();
-            if(event.getButton().equals(MouseButton.PRIMARY)&&event.getClickCount()==2){
-                if(S1!=null){
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (S1 != null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Pending Task details");
-                    alert.setHeaderText("Pending Task Details: " );
+                    alert.setHeaderText("Pending Task Details: ");
                     alert.showAndWait();
                 }
             }
@@ -62,24 +63,24 @@ public class PendingTasks implements Initializable {
 
     @FXML
     void onAcceptTask(ActionEvent event) {
-        if(S1!=null){
+        if (S1 != null) {
             PendingTasks.getItems().remove(S1);
         }
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Task Accepted");
-        alert.setHeaderText("Task Details: " );
+        alert.setHeaderText("Task Details: ");
         alert.setContentText("Task was accepted");
         alert.showAndWait();
     }
 
     @FXML
     void onDeclineTask(ActionEvent event) {
-        if(S1!=null){
+        if (S1 != null) {
             PendingTasks.getItems().remove(S1);
         }
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Task Declined");
-        alert.setHeaderText("Task Details: " );
+        alert.setHeaderText("Task Details: ");
         alert.setContentText("Task was declined");
         alert.showAndWait();
     }

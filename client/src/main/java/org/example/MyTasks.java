@@ -31,7 +31,7 @@ public class MyTasks implements Initializable {
     @FXML
     private ListView<String> volunteeringList;
 
-    public void initialize(URL arg0, ResourceBundle arg1){
+    public void initialize(URL arg0, ResourceBundle arg1) {
         helpRequestsList.getItems().add("help1");
         helpRequestsList.getItems().add("help2");
         helpRequestsList.getItems().add("help3");
@@ -44,22 +44,22 @@ public class MyTasks implements Initializable {
         volunteeringList.getItems().add("volunteered5");
         this.helpRequestsList.setOnMouseClicked(event -> {
             String S1 = this.helpRequestsList.getSelectionModel().getSelectedItem();
-            if(event.getButton().equals(MouseButton.PRIMARY)&&event.getClickCount()==2){
-                if(S1!=null){
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (S1 != null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Report details");
-                    alert.setHeaderText("Report Details: " );
+                    alert.setHeaderText("Report Details: ");
                     alert.showAndWait();
                 }
             }
         });
         this.volunteeringList.setOnMouseClicked(event -> {
             String S1 = this.volunteeringList.getSelectionModel().getSelectedItem();
-            if(event.getButton().equals(MouseButton.PRIMARY)&&event.getClickCount()==2){
-                if(S1!=null){
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                if (S1 != null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Report details");
-                    alert.setHeaderText("Report Details: " );
+                    alert.setHeaderText("Report Details: ");
                     alert.showAndWait();
                 }
             }

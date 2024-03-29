@@ -23,12 +23,13 @@ public class App extends Application {
     private static Scene scene;
     private SimpleClient client;
 
-    public static synchronized  App getInstance(){
-        if(single_instance==null){
+    public static synchronized App getInstance() {
+        if (single_instance == null) {
             single_instance = new App();
         }
         return single_instance;
     }
+
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
@@ -70,10 +71,10 @@ public class App extends Application {
         });
     }
 
-    public void EmergencyClick(){
+    public void EmergencyClick() {
         try {
             SimpleClient.getClient().sendToServer("Emergency");
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

@@ -8,6 +8,7 @@ import java.util.List;
 
 public class SimpleClient extends AbstractClient {
     private static SimpleClient client = null;
+
     private SimpleClient(String host, int port) {
         super(host, port);
     }

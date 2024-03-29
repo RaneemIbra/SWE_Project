@@ -32,44 +32,45 @@ public class TasksList implements Initializable {
     public AnchorPane rootBane;
     @FXML
     private ListView<String> TasksList;
-    public static List<Task> tasks =new ArrayList<>();
+    public static List<Task> tasks = new ArrayList<>();
     private Task selectedTask = null;
 
     //private boolean test1= true;
-    public void initialize(URL arg0, ResourceBundle arg1){
-        while (tasks.isEmpty()){
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        while (tasks.isEmpty()) {
             try {
                 Thread.currentThread().sleep(1);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-        for(Task task : tasks){
+        for (Task task : tasks) {
             this.TasksList.getItems().addAll(task.getTaskName());
         }
         this.TasksList.setOnMouseClicked(event -> {
             String selectedTaskName = this.TasksList.getSelectionModel().getSelectedItem();
-            if(selectedTaskName!=null){
-                for(Task task : tasks){
-                    if(task.getTaskName().equals(selectedTaskName)){
+            if (selectedTaskName != null) {
+                for (Task task : tasks) {
+                    if (task.getTaskName().equals(selectedTaskName)) {
                         selectedTask = task;
                         break;
                     }
                 }
             }
-            if(event.getButton().equals(MouseButton.PRIMARY)&&event.getClickCount()==2){
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
                 showAlert(selectedTaskName);
             }
         });
     }
 
-    private void showAlert(String task){
+    private void showAlert(String task) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Task details");
-        alert.setHeaderText("Task Details: " );
+        alert.setHeaderText("Task Details: ");
         alert.setContentText(task);
         alert.showAndWait();
     }
+
     @FXML
     void onPickTask(ActionEvent event) throws IOException {
         Alert alert1 = new Alert((Alert.AlertType.CONFIRMATION));
@@ -79,8 +80,8 @@ public class TasksList implements Initializable {
         alert1.setContentText("Do you want to pick " + selectedTask.getTaskName() + "?");
         alert2.setTitle("Task Volunteering");
         alert2.setHeaderText(selectedTask.getTaskName());
-        alert1.showAndWait().ifPresent(response ->{
-            if(response== ButtonType.OK && selectedTask.getState().equals("Pending")){
+        alert1.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK && selectedTask.getState().equals("Pending")) {
                 try {
                     SimpleClient.getClient().sendToServer("modify " + selectedTask.getTaskID());
                 } catch (IOException e) {
@@ -88,8 +89,7 @@ public class TasksList implements Initializable {
                 }
                 alert2.setContentText(selectedTask.getTaskName() + " was picked");
                 alert2.showAndWait();
-            }
-            else if(response==ButtonType.OK && selectedTask.getState().equals("in progress")){
+            } else if (response == ButtonType.OK && selectedTask.getState().equals("in progress")) {
                 alert2.setContentText(selectedTask.getTaskName() + " is already in progress");
                 alert2.showAndWait();
             }
@@ -98,8 +98,8 @@ public class TasksList implements Initializable {
 
     @FXML
     void onShowTaskDetails(ActionEvent event) {
-        try{
-            if(selectedTask != null){
+        try {
+            if (selectedTask != null) {
                 showAlert(selectedTask.toString());
                 SimpleClient.getClient().sendToServer(selectedTask);
             }

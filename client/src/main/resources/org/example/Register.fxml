@@ -22,27 +22,27 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Label layoutX="105.0" layoutY="122.0" text="User ID: " textFill="WHITE">
+      <Label layoutX="105.0" layoutY="170.0" text="User ID: " textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Label layoutX="105.0" layoutY="182.0" text="Email Address:" textFill="WHITE">
+      <Label layoutX="105.0" layoutY="230.0" text="Email Address:" textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Label layoutX="105.0" layoutY="248.0" text="Password: " textFill="WHITE">
+      <Label layoutX="105.0" layoutY="290.0" text="Password: " textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Label layoutX="105.0" layoutY="382.0" text="Phone Number: " textFill="WHITE">
+      <Label layoutX="105.0" layoutY="410.0" text="Phone Number: " textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Label layoutX="105.0" layoutY="314.0" text="Address: " textFill="WHITE">
+      <Label layoutX="105.0" layoutY="350.0" text="Address: " textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
@@ -55,12 +55,12 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <TextField fx:id="UserIDTF" layoutX="333.0" layoutY="122.0" onAction="#onUserIDText" promptText="User ID" />
-      <TextField fx:id="EmailAddressTF" layoutX="333.0" layoutY="182.0" onAction="#onEmailAddressText" promptText="Email Address" />
-      <TextField fx:id="PasswordTF" layoutX="333.0" layoutY="248.0" onAction="#OnPasswordText" promptText="Password" />
-      <TextField fx:id="AddressTF" layoutX="333.0" layoutY="314.0" onAction="#onAddressText" promptText="Home Address" />
-      <TextField fx:id="PhoneNumTF" layoutX="333.0" layoutY="382.0" onAction="#onPhoneNumText" promptText="Phone Number" />
-      <Button fx:id="SubmitBTN" layoutX="639.0" layoutY="444.0" mnemonicParsing="false" onAction="#onSubmit" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Submit" textFill="WHITE" underline="true">
+      <TextField fx:id="UserIDTF" layoutX="333.0" layoutY="170.0" onKeyTyped="#onUserIDText" promptText="User ID" />
+      <TextField fx:id="EmailAddressTF" layoutX="333.0" layoutY="230.0" onKeyTyped="#onEmailAddressText" promptText="Email Address" />
+      <TextField fx:id="PasswordTF" layoutX="333.0" layoutY="290.0" onKeyTyped="#OnPasswordText" promptText="Password" />
+      <TextField fx:id="AddressTF" layoutX="333.0" layoutY="350.0" onKeyTyped="#onAddressText" promptText="Home Address" />
+      <TextField fx:id="PhoneNumTF" layoutX="333.0" layoutY="410.0" onKeyTyped="#onPhoneNumText" promptText="Phone Number" />
+      <Button fx:id="SubmitBTN" layoutX="690.0" layoutY="464.0" mnemonicParsing="false" onAction="#onSubmit" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Submit" textFill="WHITE" underline="true">
          <font>
             <Font name="System Bold Italic" size="16.0" />
          </font>
@@ -71,12 +71,12 @@
             <Bloom />
          </effect>
       </Button>
-      <Label layoutX="105.0" layoutY="450.0" text="Group ID:" textFill="WHITE">
+      <Label layoutX="105.0" layoutY="470.0" text="Group ID:" textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="GroupIDTF" layoutX="333.0" layoutY="450.0" onAction="#onGroupIDTF" promptText="Group ID/Community ID" />
+      <TextField fx:id="GroupIDTF" layoutX="333.0" layoutY="470.0" onKeyTyped="#onGroupIDTF" promptText="Group ID/Community ID" />
       <Button fx:id="LogInPage" layoutY="617.0" mnemonicParsing="false" onAction="#OnLogInClick" prefHeight="54.0" prefWidth="111.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Back to login" textFill="WHITE" underline="true">
          <font>
             <Font name="System Bold" size="12.0" />
@@ -88,5 +88,46 @@
             <Bloom />
          </effect>
       </Button>
+      <Label layoutX="105.0" layoutY="110.0" text="Full Name:" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="FullNameTF" layoutX="333.0" layoutY="110.0" onKeyTyped="#onFullName" promptText="Full Name" />
+      <Label fx:id="InvalidNameLabel" layoutX="537.0" layoutY="110.0" text="Invalid Name" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="InvalidIDLabel" layoutX="537.0" layoutY="170.0" text="Invalid ID" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="InvalidEmailLabel" layoutX="537.0" layoutY="230.0" text="Invalid Email Address" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="InvalidPasswordLabel" layoutX="537.0" layoutY="290.0" text="Invalid Password" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="InvalidAddressLabel" layoutX="537.0" layoutY="350.0" text="Invalid Address" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="InvalidPhoneNumberLabel" layoutX="537.0" layoutY="410.0" text="Invalid Phone Number" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="InvalidGroupIDLabel" layoutX="537.0" layoutY="470.0" text="Invalid Group ID" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
