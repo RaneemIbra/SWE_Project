@@ -1,9 +1,11 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -16,9 +18,9 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Register implements Initializable {
+public class Register implements Initializable,ServerResponseCallback  {
     Users user;
-
+    public static boolean exists = false;
     private static final String EMAIL_REGEX =
             "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
@@ -74,9 +76,11 @@ public class Register implements Initializable {
     @FXML
     private Label InvalidPhoneNumberLabel;
 
-
     @FXML
     private TextField FullNameTF;
+
+    Boolean nameFlag = false, passwordFlag = false, addressFlag = false,
+            IDFlag = false, emailFlag = false, phoneNumFlag = false, groupIDFlag = false;
 
     public void initialize(URL arg0, ResourceBundle arg1) {
         user = new Users();
@@ -112,9 +116,11 @@ public class Register implements Initializable {
         if (!PasswordTF.getText().isEmpty()) {
             this.user.setPassword(PasswordTF.getText());
             InvalidPasswordLabel.setVisible(false);
+            passwordFlag = true;
         } else {
             this.user.setPassword("");
             InvalidPasswordLabel.setVisible(true);
+            passwordFlag = false;
         }
     }
 
@@ -123,9 +129,11 @@ public class Register implements Initializable {
         if (!AddressTF.getText().isEmpty()) {
             this.user.setHomeAddress(AddressTF.getText());
             InvalidAddressLabel.setVisible(false);
+            addressFlag = true;
         } else {
             this.user.setHomeAddress("");
             InvalidAddressLabel.setVisible(true);
+            addressFlag = false;
         }
     }
 
@@ -134,9 +142,11 @@ public class Register implements Initializable {
         if (!EmailAddressTF.getText().isEmpty() && isValid(EmailAddressTF.getText())) {
             this.user.setEmailAddress(EmailAddressTF.getText());
             InvalidEmailLabel.setVisible(false);
+            emailFlag = true;
         } else {
             this.user.setEmailAddress("");
             InvalidEmailLabel.setVisible(true);
+            emailFlag = false;
         }
     }
 
@@ -146,12 +156,14 @@ public class Register implements Initializable {
             try {
                 this.user.setPhoneNumber(Integer.parseInt(PhoneNumTF.getText()));
                 InvalidPhoneNumberLabel.setVisible(false);
+                phoneNumFlag = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             this.user.setPhoneNumber(0);
             InvalidPhoneNumberLabel.setVisible(true);
+            phoneNumFlag = false;
         }
     }
 
@@ -162,27 +174,47 @@ public class Register implements Initializable {
             if (!FullNameTF.getText().isEmpty()) {
                 this.user.setFullName(FullNameTF.getText());
                 InvalidNameLabel.setVisible(false);
+                nameFlag = true;
             } else {
                 this.user.setFullName("");
                 InvalidNameLabel.setVisible(true);
+                nameFlag = false;
+            }
+        });
+    }
+
+    @Override
+    public void onResponse(String response) {
+        if (response.equals("exists")) {
+            exists = true;
+        } else if (response.equals("doesn't exist")) {
+            exists = false;
+        }
+        Platform.runLater(() -> {
+            if(!exists){
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
+                    AnchorPane PrimaryBane = loader.load();
+                    rootBane.getChildren().setAll(PrimaryBane);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Registered successfully");
+            } else {
+                System.out.println("client already exists");
             }
         });
     }
 
     @FXML
     void onSubmit(ActionEvent event) {
-        if (!(user.getFullName().isEmpty() && user.getUserID() == 0 && user.getPassword().isEmpty()
-                && user.getEmailAddress().isEmpty() && user.getHomeAddress().isEmpty()
-                && user.getGroupID() == 0 && user.getPhoneNumber() == 0)) {
+        if (nameFlag && passwordFlag && phoneNumFlag && emailFlag && addressFlag && groupIDFlag && IDFlag) {
+            SimpleClient.getClient().setCallback(this);
             try {
-                SimpleClient.getClient().sendToServer("Register");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
-                AnchorPane PrimaryBane = loader.load();
-                rootBane.getChildren().setAll(PrimaryBane);
+                SimpleClient.getClient().sendToServer("Register" + " " + user.getFullName() + " " + user.getUserID()
+                        + " " + user.getEmailAddress() + " " + user.getPassword() + " " + user.getHomeAddress()
+                        + " " + user.getPhoneNumber() + " "
+                        + user.getGroupID());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -195,12 +227,14 @@ public class Register implements Initializable {
             try {
                 this.user.setUserID(Integer.parseInt(UserIDTF.getText()));
                 InvalidIDLabel.setVisible(false);
+                IDFlag = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             this.user.setUserID(0);
             InvalidIDLabel.setVisible(true);
+            IDFlag = false;
         }
     }
 
@@ -210,11 +244,13 @@ public class Register implements Initializable {
             try {
                 this.user.setGroupID(Integer.parseInt(GroupIDTF.getText()));
                 InvalidGroupIDLabel.setVisible(false);
+                groupIDFlag = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             InvalidGroupIDLabel.setVisible(true);
+            groupIDFlag = false;
         }
     }
 
