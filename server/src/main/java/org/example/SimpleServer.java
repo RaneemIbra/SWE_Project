@@ -145,6 +145,12 @@ public class SimpleServer extends AbstractServer {
         session.flush();
     }
 
+    public static void handleNewUser(String fullName, int userID, String emailAddress, String password,
+                                     String address, int phoneNumber, int groupID){
+            Users newUser = new Users(fullName, password, userID, emailAddress, address, phoneNumber,groupID, "User");
+            session.save(newUser);
+            session.flush();
+    }
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         try {
@@ -162,8 +168,35 @@ public class SimpleServer extends AbstractServer {
                 client.sendToClient(message);
             } else if (message.equals("Emergency")) {
                 System.out.println("we have an emergency");
-            } else if (message.equals("Register")) {
-                System.out.println("Registered successfuly");
+            } else if (message.startsWith("Register")) {
+                String[] userData = message.split(" ");
+                try {
+                    session = sessionFactory.openSession();
+                    session.beginTransaction();
+                    CriteriaBuilder builder = session.getCriteriaBuilder();
+                    CriteriaQuery<Users> query = builder.createQuery(Users.class);
+                    Root<Users> root = query.from(Users.class);
+                    query.where(builder.equal(root.get("EmailAddress"), userData[3]));
+                    List<Users> users = session.createQuery(query).getResultList();
+                    if(!users.isEmpty()){
+                        client.sendToClient("exists");
+                    }else{
+                        handleNewUser(userData[1],Integer.parseInt(userData[2]),userData[3],userData[4]
+                                ,userData[5],Integer.parseInt(userData[6]),Integer.parseInt(userData[7]));
+                        client.sendToClient("doesn't exist");
+                        System.out.println("Registered successfuly");
+                    }
+                    session.getTransaction().commit();
+                } catch (Exception var5) {
+                    if (session != null && session.getTransaction().isActive()) {
+                        session.getTransaction().rollback();
+                    }
+                    var5.printStackTrace();
+                } finally {
+                    if (session != null) {
+                        session.close();
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
