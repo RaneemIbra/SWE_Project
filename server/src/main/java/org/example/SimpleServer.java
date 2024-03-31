@@ -17,6 +17,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.*;
@@ -126,14 +128,14 @@ public class SimpleServer extends AbstractServer {
     }
 
     public static void generateUsersTable() {
-        Users user1 = new Users("Eden Daddo", "Eden11", 2128219878, "edenDado@gmail.com", "Haifa, Remot Remez, Haviva Reich 54", 547823641, 1928312093, "User");
-        Users user2 = new Users("Karen Yakov", "Karen11", 2127726318, "karenYakov@gmail.com", "Haifa, Remot Alon, Dovnov 18", 547374388, 1928312093, "User");
-        Users user3 = new Users("Leen Yakov", "Leen12", 1823718982, "leenYakov@gmail.com", "Haifa, Remot Alon, Dovnov 16", 518723618, 1928312093, "User");
-        Users user4 = new Users("Rami Benet", "Rami11", 2138291782, "ramiBenet@gmail.com", "Haifa, Remot Remez, Haviva Reich 60", 534289782, 1928312093, "User");
-        Users user5 = new Users("Abo Majd", "Majd5", 1212323982, "aboMajd@gmail.com", "Haifa, Remot Remez, Haviva Reich 40", 541271872, 1928312093, "User");
-        Users user6 = new Users("Yonatan Boris", "Yonatan12", 1728631726, "yonatanBoris@gmail.com", "Haifa, Neve Shanan, Netiv Hen 12", 541782631, 1928312093, "User");
-        Users user7 = new Users("Louis Litt", "Louis15", 1237298379, "louisLitt@gmail.com", "Haifa, Neve Shanan, Netiv Hen 10", 576718722, 1928312093, "User");
-        Users user8 = new Users("Yohanan Bloomfield", "Yohanan16", 1213798179, "yohananBloomfield@gmail.com", "Haifa, Neve Shanan, Hanita 24", 542882281, 1928312093, "Manager");
+        Users user1 = new Users("Eden Daddo", "Eden11", 2128219878, "edenDado@gmail.com", "Haifa Remot Remez Haviva Reich 54", 547823641, 1, "User");
+        Users user2 = new Users("Karen Yakov", "Karen11", 2127726318, "karenYakov@gmail.com", "Haifa Remot Alon Dovnov 18", 547374388, 2, "User");
+        Users user3 = new Users("Leen Yakov", "Leen12", 1823718982, "leenYakov@gmail.com", "Haifa Remot Alon Dovnov 16", 518723618, 2, "User");
+        Users user4 = new Users("Rami Benet", "Rami11", 2138291782, "ramiBenet@gmail.com", "Haifa Remot Remez Haviva Reich 60", 534289782, 1, "User");
+        Users user5 = new Users("Abo Majd", "Majd5", 1212323982, "aboMajd@gmail.com", "Haifa Remot Remez Haviva Reich 40", 541271872, 3, "User");
+        Users user6 = new Users("Yonatan Boris", "Yonatan12", 1728631726, "yonatanBoris@gmail.com", "Haifa Neve Shanan Netiv Hen 12", 541782631, 3, "User");
+        Users user7 = new Users("Louis Litt", "Louis15", 1237298379, "louisLitt@gmail.com", "Haifa Neve Shanan Netiv Hen 10", 576718722, 2, "User");
+        Users user8 = new Users("Yohanan Bloomfield", passwordEncrypt("Yohanan16"), 1213798179, "yohananBloomfield@gmail.com", "Haifa Neve Shanan Hanita 24", 542882281, 1, "Manager");
         session.save(user1);
         session.save(user2);
         session.save(user3);
@@ -147,10 +149,29 @@ public class SimpleServer extends AbstractServer {
 
     public static void handleNewUser(String fullName, int userID, String emailAddress, String password,
                                      String address, int phoneNumber, int groupID){
-            Users newUser = new Users(fullName, password, userID, emailAddress, address, phoneNumber,groupID, "User");
+            Users newUser = new Users(fullName, passwordEncrypt(password), userID, emailAddress, address, phoneNumber,groupID, "User");
             session.save(newUser);
             session.flush();
     }
+
+    public static String passwordEncrypt(String password){
+        String salt= "csgo";
+        try {
+            String passwordWithSalt = password + salt;
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] hashBytes = digest.digest(passwordWithSalt.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        }catch (NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         try {
@@ -169,7 +190,7 @@ public class SimpleServer extends AbstractServer {
             } else if (message.equals("Emergency")) {
                 System.out.println("we have an emergency");
             } else if (message.startsWith("Register")) {
-                String[] userData = message.split(" ");
+                String[] userData = message.split(",");
                 try {
                     session = sessionFactory.openSession();
                     session.beginTransaction();
@@ -196,6 +217,30 @@ public class SimpleServer extends AbstractServer {
                     if (session != null) {
                         session.close();
                     }
+                }
+            } else if (message.startsWith("LogIn")) {
+                String[] userData = message.split(",");
+                session = sessionFactory.openSession();
+                session.beginTransaction();
+                CriteriaBuilder builder = session.getCriteriaBuilder();
+                CriteriaQuery<Users> query = builder.createQuery(Users.class);
+                Root<Users> root = query.from(Users.class);
+                query.where(builder.equal(root.get("EmailAddress"), userData[1]));
+                List<Users> users = session.createQuery(query).getResultList();
+                if(!users.isEmpty()){
+                    for(Users user1 : users){
+                        System.out.println(user1.getPassword());
+                        System.out.println(passwordEncrypt(userData[2]));
+                        if(user1.getPassword().equals(passwordEncrypt(userData[2]))){
+                            client.sendToClient("LogIn," + user1.getFullName() + "," + user1.getUserID()
+                            + "," + user1.getEmailAddress() + "," + user1.getPassword() + "," + user1.getHomeAddress()
+                            + "," + user1.getPhoneNumber() + "," + user1.getGroupID() + "," + user1.getTitle());
+                        }else{
+                            client.sendToClient("WrongPassword");
+                        }
+                    }
+                }else{
+                    client.sendToClient("Don't LogIn");
                 }
             }
         } catch (Exception e) {

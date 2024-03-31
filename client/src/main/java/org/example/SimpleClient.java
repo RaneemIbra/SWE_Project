@@ -19,7 +19,9 @@ public class SimpleClient extends AbstractClient {
 
     @Override
     protected void handleMessageFromServer(Object msg) {
-        if(msg.toString().equals("exists")||msg.toString().equals("doesn't exist")){
+        if(msg.toString().equals("exists")||msg.toString().equals("doesn't exist")
+                || msg.toString().startsWith("LogIn")|| msg.toString().equals("Don't LogIn")
+                || msg.toString().equals("WrongPassword")){
             if(callback!=null){
                 callback.onResponse(msg.toString());
             }

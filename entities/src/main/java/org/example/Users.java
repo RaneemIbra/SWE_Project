@@ -18,7 +18,6 @@ public class Users implements Serializable {
     int PhoneNumber;
     int GroupID;
     String Title;
-    private String salt;
 
     public Users(String fullName, String password, int userID, String emailAddress, String homeAddress, int phoneNumber, int groupID, String title) {
         FullName = fullName;
@@ -47,20 +46,7 @@ public class Users implements Serializable {
     }
 
     public void setPassword(String password) {
-        try {
-            SecureRandom secureRandom = new SecureRandom();
-            byte[] saltBytes = new byte[16];
-            secureRandom.nextBytes(saltBytes);
-            this.salt = bytesToHex(saltBytes);
-
-            String passwordWithSalt = password + salt;
-
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            byte[] hashBytes = digest.digest(passwordWithSalt.getBytes());
-            this.Password = bytesToHex(hashBytes);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+        this.Password = password;
     }
 
     public String getFullName() {
@@ -115,15 +101,8 @@ public class Users implements Serializable {
         return Title;
     }
 
+
     public void setTitle(String title) {
         Title = title;
-    }
-
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
     }
 }
