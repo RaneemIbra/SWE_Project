@@ -211,9 +211,9 @@ public class Register implements Initializable,ServerResponseCallback  {
         if (nameFlag && passwordFlag && phoneNumFlag && emailFlag && addressFlag && groupIDFlag && IDFlag) {
             SimpleClient.getClient().setCallback(this);
             try {
-                SimpleClient.getClient().sendToServer("Register" + " " + user.getFullName() + " " + user.getUserID()
-                        + " " + user.getEmailAddress() + " " + user.getPassword() + " " + user.getHomeAddress()
-                        + " " + user.getPhoneNumber() + " "
+                SimpleClient.getClient().sendToServer("Register" + "," + user.getFullName() + "," + user.getUserID()
+                        + "," + user.getEmailAddress() + "," + user.getPassword() + "," + user.getHomeAddress()
+                        + "," + user.getPhoneNumber() + ","
                         + user.getGroupID());
             } catch (IOException e) {
                 e.printStackTrace();

@@ -35,9 +35,10 @@ public class PrimaryController implements Initializable {
 
     public boolean test1 = true;
 
+    public static Users currentUser;
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
-        if (test1) {
+        if (currentUser.getTitle().equals("Manager")) {
             ShowTaskListButton.setTranslateX(-210);
             HelpFormBTN.setTranslateX(204);
             PendingTasksBTN.setVisible(true);
