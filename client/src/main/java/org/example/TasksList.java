@@ -35,7 +35,6 @@ public class TasksList implements Initializable {
     public static List<Task> tasks = new ArrayList<>();
     private Task selectedTask = null;
 
-    //private boolean test1= true;
     public void initialize(URL arg0, ResourceBundle arg1) {
         while (tasks.isEmpty()) {
             try {
@@ -58,7 +57,15 @@ public class TasksList implements Initializable {
                 }
             }
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                showAlert(selectedTaskName);
+                try {
+                    if (selectedTask != null) {
+                        showAlert(selectedTask.toString());
+                        SimpleClient.getClient().sendToServer(selectedTask);
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
     }

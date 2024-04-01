@@ -4,14 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class HelpForm implements Initializable {
@@ -36,17 +36,31 @@ public class HelpForm implements Initializable {
     @FXML
     private Button homePageBTN;
 
+    @FXML
+    private Label InvalidDate;
+
+    @FXML
+    private Label InvalidRequest1;
+
+    @FXML
+    private Label InvalidRequest2;
+    String HelpReqListSelection;
+    String HelpReqTFValue;
+    LocalDate date;
     private final String[] help = {"Walk The Dog", "Buy Groceries", "Help Clean The House",
-            "Buy Medications", "Give A Ride", "Maw the Lawn"};
+            "Buy Medications", "Give A Ride", "Maw the Lawn", "Other..."};
 
     public void initialize(URL arg0, ResourceBundle arg1) {
         HelpRequests.getItems().addAll(help);
-        //HelpRequests.setOnAction(this::getHelp);
+        InvalidDate.setVisible(false);
+        InvalidRequest1.setVisible(false);
+        InvalidRequest2.setVisible(false);
+        this.HelpRequests.setOnAction(event ->{
+            HelpReqListSelection = this.HelpRequests.getSelectionModel().getSelectedItem();
+            InvalidRequest1.setVisible(false);
+        });
     }
 
-    //    public void getHelp(ActionEvent event){
-//        String Help = HelpRequests.getValue();
-//    }
     @FXML
     void OnEmergency(ActionEvent event) {
         App appInstance = App.getInstance();
@@ -54,18 +68,49 @@ public class HelpForm implements Initializable {
     }
 
     @FXML
-    void OnHelpRequestTF(ActionEvent event) {
-        System.out.println("specific form");
+    void OnHelpRequestTF(KeyEvent event) {
+        HelpReqTFValue = HelpRequestTF.getText();
+        InvalidRequest2.setVisible(false);
     }
 
     @FXML
     void OnSubmitFormButton(ActionEvent event) {
-        System.out.println("submit working");
+        if(date == null){
+            InvalidDate.setVisible(true);
+        }else if(HelpReqListSelection == null){
+            InvalidRequest1.setVisible(true);
+        }else if(HelpReqListSelection.startsWith("Other...")&&
+                (HelpReqTFValue ==null || HelpReqTFValue.isEmpty())){
+            InvalidRequest2.setVisible(true);
+        }else{
+            Alert alert = new Alert((Alert.AlertType.CONFIRMATION));
+            Alert alert2 = new Alert((Alert.AlertType.INFORMATION));
+            alert.setTitle("Help Form");
+            alert.setHeaderText("Form Details: ");
+            alert.setContentText("Do you want to submit the help request?");
+            alert2.setTitle("Form Info");
+            alert2.setHeaderText("Form sent");
+            alert2.setContentText("The help form was sent to the community manager, and waiting for confirmation");
+            alert.showAndWait().ifPresent(response->{
+                if(response == ButtonType.OK){
+                    try {
+                        SimpleClient.getClient().sendToServer("HelpRequest," + HelpReqListSelection + "," +
+                                HelpReqTFValue + ","+ date + "," + PrimaryController.currentUser.getFullName()
+                                + "," + PrimaryController.currentUser.getUserID());
+                        alert2.show();
+                        onHomePageClick(event);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
     @FXML
     void onHelpDueDate(ActionEvent event) {
-        System.out.println("this is working too");
+        date = HelpDueDate.getValue();
+        InvalidDate.setVisible(false);
     }
 
     @FXML

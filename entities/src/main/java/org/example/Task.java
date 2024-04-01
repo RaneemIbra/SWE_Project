@@ -16,8 +16,9 @@ public class Task implements Serializable {
     String State;
     LocalDateTime SubmissionTime;
     String Volunteer;
-
-    public Task(int taskID, String taskName, String taskDescription, String userName, int userID, String state, LocalDateTime submissionTime, String volunteer) {
+    String Authorized;
+    public Task(int taskID, String taskName, String taskDescription, String userName, int userID,
+                String state, LocalDateTime submissionTime, String volunteer, String authorized) {
         TaskID = taskID;
         TaskName = taskName;
         TaskDescription = taskDescription;
@@ -26,10 +27,19 @@ public class Task implements Serializable {
         State = state;
         SubmissionTime = submissionTime;
         Volunteer = volunteer;
+        Authorized = authorized;
     }
 
     public Task() {
 
+    }
+
+    public String getAuthorized() {
+        return Authorized;
+    }
+
+    public void setAuthorized(String authorized) {
+        Authorized = authorized;
     }
 
     public int getTaskID() {
