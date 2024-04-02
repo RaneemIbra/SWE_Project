@@ -32,10 +32,8 @@ public class PrimaryController implements Initializable {
 
     @FXML
     private Button HelpFormBTN;
-
-    public boolean test1 = true;
-
     public static Users currentUser;
+
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
         if (currentUser.getTitle().equals("Manager")) {
@@ -95,6 +93,7 @@ public class PrimaryController implements Initializable {
     @FXML
     void onViewPendingTasks(ActionEvent event) {
         try {
+            SimpleClient.getClient().sendToServer("get unauthorized tasks");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PendingTasks.fxml"));
             AnchorPane PrimaryBane = loader.load();
             rootBane.getChildren().setAll(PrimaryBane);

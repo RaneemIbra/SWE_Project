@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
@@ -17,8 +18,9 @@ public class Task implements Serializable {
     LocalDateTime SubmissionTime;
     String Volunteer;
     String Authorized;
+    String DueDate;
     public Task(int taskID, String taskName, String taskDescription, String userName, int userID,
-                String state, LocalDateTime submissionTime, String volunteer, String authorized) {
+                String state, LocalDateTime submissionTime, String volunteer, String authorized, String dueDate) {
         TaskID = taskID;
         TaskName = taskName;
         TaskDescription = taskDescription;
@@ -28,6 +30,7 @@ public class Task implements Serializable {
         SubmissionTime = submissionTime;
         Volunteer = volunteer;
         Authorized = authorized;
+        DueDate = dueDate;
     }
 
     public Task() {
@@ -108,6 +111,8 @@ public class Task implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Task ID: %d\nTask Description: %s\nUser Name: %s\nUser ID: %d\nState: %s\nVolunteer: %s", TaskID, TaskDescription, UserName, UserID, State, Volunteer);
+        return String.format("Task ID: %d\nTask Description: %s\nUser Name: %s\nUser ID: " +
+                "%d\nState: %s\nVolunteer: %s\nSubmission Time: %s\nDue Date: %s",
+                TaskID, TaskDescription, UserName, UserID, State, Volunteer, SubmissionTime, DueDate);
     }
 }

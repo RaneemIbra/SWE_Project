@@ -12,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PendingTasks implements Initializable {
@@ -34,22 +36,34 @@ public class PendingTasks implements Initializable {
     @FXML
     private AnchorPane rootBane;
 
+    public static List<Task> tasks = new ArrayList<>();
     public String S1;
 
+    Task task;
     public void initialize(URL arg0, ResourceBundle arg1) {
-        PendingTasks.getItems().add("task1");
-        PendingTasks.getItems().add("task2");
-        PendingTasks.getItems().add("task3");
-        PendingTasks.getItems().add("task4");
-        PendingTasks.getItems().add("task5");
+        while (tasks.isEmpty()) {
+            try {
+                Thread.currentThread().sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        for (Task task : tasks) {
+            this.PendingTasks.getItems().addAll(task.getTaskName());
+        }
         this.PendingTasks.setOnMouseClicked(event -> {
             S1 = this.PendingTasks.getSelectionModel().getSelectedItem();
+            if(S1!=null){
+                for(Task task1 : tasks){
+                    if(task1.getTaskName().equals(S1)){
+                        task=task1;
+                        break;
+                    }
+                }
+            }
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (S1 != null) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Pending Task details");
-                    alert.setHeaderText("Pending Task Details: ");
-                    alert.showAndWait();
+                if (task != null) {
+                    showAlert(task.toString());
                 }
             }
         });
@@ -71,6 +85,19 @@ public class PendingTasks implements Initializable {
         alert.setHeaderText("Task Details: ");
         alert.setContentText("Task was accepted");
         alert.showAndWait();
+        try {
+            SimpleClient.getClient().sendToServer("Task Accepted," + task.getTaskID());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(String task) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Task details");
+        alert.setHeaderText("Task Details: ");
+        alert.setContentText(task);
+        alert.showAndWait();
     }
 
     @FXML
@@ -83,6 +110,11 @@ public class PendingTasks implements Initializable {
         alert.setHeaderText("Task Details: ");
         alert.setContentText("Task was declined");
         alert.showAndWait();
+        try {
+            SimpleClient.getClient().sendToServer("Task Declined," + task.getTaskID());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
