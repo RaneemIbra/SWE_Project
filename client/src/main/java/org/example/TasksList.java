@@ -60,7 +60,7 @@ public class TasksList implements Initializable {
                 try {
                     if (selectedTask != null) {
                         showAlert(selectedTask.toString());
-                        SimpleClient.getClient().sendToServer(selectedTask);
+                        SimpleClient.getClient().sendToServer(selectedTask.toString());
                     }
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -108,7 +108,7 @@ public class TasksList implements Initializable {
         try {
             if (selectedTask != null) {
                 showAlert(selectedTask.toString());
-                SimpleClient.getClient().sendToServer(selectedTask);
+                SimpleClient.getClient().sendToServer(selectedTask.toString());
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block

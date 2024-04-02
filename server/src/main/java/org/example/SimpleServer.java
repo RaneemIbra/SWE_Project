@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.*;
@@ -85,7 +86,7 @@ public class SimpleServer extends AbstractServer {
         return null;
     }
 
-    private static void modifyTask(int TaskID) {
+    private static void modifyTask(int TaskID, String msg) {
         try {
             session = sessionFactory.openSession();
             session.beginTransaction();
@@ -95,7 +96,13 @@ public class SimpleServer extends AbstractServer {
             query.where(builder.equal(root.get("TaskID"), TaskID));
             List<Task> tasks = session.createQuery(query).getResultList();
             for (Task task : tasks) {
-                task.setState("in progress");
+                if (msg.equals("TasksList")) {
+                    task.setState("in progress");
+                } else if (msg.equals("Authorized")) {
+                    task.setAuthorized("Authorized");
+                } else if (msg.equals("Unauthorized")) {
+                    session.delete(task);
+                }
             }
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -112,16 +119,17 @@ public class SimpleServer extends AbstractServer {
 
     public static void generateTasksTable() {
         LocalDateTime now = LocalDateTime.now();
-        Task task1 = new Task(1829371289, "Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none" , "Authorized");
-        Task task2 = new Task(1829371284, "Task2", "Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized");
-        Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized");
-        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "Pending", now, "none", "Authorized");
-        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "Pending", now, "none", "Authorized");
-        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized");
-        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized");
-        Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized");
-        Task task9 = new Task(1829371285, "Task9", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized");
-        Task task10 = new Task(1829371285, "Task10", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized");
+        String dueDate = now.toString();
+        Task task1 = new Task(1829371289, "Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none", "Authorized",dueDate);
+        Task task2 = new Task(1829371284, "Task2", "Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized",dueDate);
+        Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized",dueDate);
+        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "Pending", now, "none", "Authorized",dueDate);
+        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "Pending", now, "none", "Authorized",dueDate);
+        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
+        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
+        Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
+        Task task9 = new Task(1829371285, "Task9", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
+        Task task10 = new Task(1829371285, "Task10", "Give a ride", "Eden daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
 
         session.save(task1);
         session.save(task2);
@@ -189,7 +197,7 @@ public class SimpleServer extends AbstractServer {
                 client.sendToClient(getAllTasks("Authorized"));
             } else if (message.startsWith("modify")) {
                 String taskid = message.split(" ")[1];
-                modifyTask(Integer.parseInt(taskid));
+                modifyTask(Integer.parseInt(taskid), "TasksList");
                 client.sendToClient(getAllTasks("Authorized"));
             } else if (message.equals("add client")) {
                 SubscribedClient connection = new SubscribedClient(client);
@@ -238,8 +246,6 @@ public class SimpleServer extends AbstractServer {
                 List<Users> users = session.createQuery(query).getResultList();
                 if (!users.isEmpty()) {
                     for (Users user1 : users) {
-                        System.out.println(user1.getPassword());
-                        System.out.println(passwordEncrypt(userData[2]));
                         if (user1.getPassword().equals(passwordEncrypt(userData[2]))) {
                             client.sendToClient("LogIn," + user1.getFullName() + "," + user1.getUserID()
                                     + "," + user1.getEmailAddress() + "," + user1.getPassword() + "," + user1.getHomeAddress()
@@ -251,18 +257,18 @@ public class SimpleServer extends AbstractServer {
                 } else {
                     client.sendToClient("Don't LogIn");
                 }
-            }else if(message.startsWith("HelpRequest")){
+            } else if (message.startsWith("HelpRequest")) {
                 String[] HelpRequest = message.split(",");
                 LocalDateTime now = LocalDateTime.now();
-                Task tempTask = new Task(1,"TempTask",HelpRequest[1] + " " + HelpRequest[2], HelpRequest[4]
-                , Integer.parseInt(HelpRequest[5]),"Pending", now, "none", "Unauthorized");
+                Task tempTask = new Task(1, HelpRequest[6], HelpRequest[1] + " " + HelpRequest[2], HelpRequest[4]
+                        , Integer.parseInt(HelpRequest[5]), "Pending", now, "none", "Unauthorized", HelpRequest[3]);
                 try {
                     session = sessionFactory.openSession();
                     session.beginTransaction();
                     session.save(tempTask);
                     session.flush();
                     session.getTransaction().commit();
-                }catch (Exception var5) {
+                } catch (Exception var5) {
                     if (session != null && session.getTransaction().isActive()) {
                         session.getTransaction().rollback();
                     }
@@ -272,6 +278,14 @@ public class SimpleServer extends AbstractServer {
                         session.close();
                     }
                 }
+            } else if (message.equals("get unauthorized tasks")) {
+                client.sendToClient(getAllTasks("Unauthorized"));
+            } else if (message.startsWith("Task Accepted,")) {
+                String accept = message.split(",")[1];
+                modifyTask(Integer.parseInt(accept), "Authorized");
+            } else if (message.startsWith("Task Declined,")) {
+                String decline = message.split(",")[1];
+                modifyTask(Integer.parseInt(decline), "Unauthorized");
             }
         } catch (Exception e) {
             e.printStackTrace();
