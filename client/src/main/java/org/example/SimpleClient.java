@@ -24,8 +24,33 @@ public class SimpleClient extends AbstractClient {
     @Override
     protected void handleMessageFromServer(Object msg) {
         if (msg instanceof List) {
-            TasksList.tasks = (List<Task>) msg;
-            PendingTasks.tasks = (List<Task>) msg;
+            try {
+                localList = (List<Task>) msg;
+                if(!localList.toString().startsWith("[Report")){
+                    TasksList.tasks.clear();
+                    PendingTasks.tasks.clear();
+                    MyTasks.tasks.clear();
+                    for (Task task : localList) {
+                        if (task.getAuthorized().equals("Authorized")) {
+                            TasksList.tasks.add(task);
+                            if (task.getUserName().equals(PrimaryController.currentUser.getFullName()) ||
+                                    task.getVolunteer().equals(PrimaryController.currentUser.getFullName())) {
+                                MyTasks.tasks.add(task);
+                            }
+                        } else if (task.getAuthorized().equals("Unauthorized")) {
+                            PendingTasks.tasks.add(task);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                EmergencyReports.reports = (List<Reports>) msg;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            callback.onResponse("Ready");
         } else if (msg.toString().equals("exists") || msg.toString().equals("doesn't exist")
                 || msg.toString().startsWith("LogIn") || msg.toString().equals("Don't LogIn")
                 || msg.toString().equals("WrongPassword")) {

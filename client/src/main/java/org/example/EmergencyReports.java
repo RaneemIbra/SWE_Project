@@ -30,23 +30,40 @@ public class EmergencyReports implements Initializable {
     @FXML
     private Button homePageBTN;
 
+    public static List<Reports> reports = new ArrayList<>();
+
     public void initialize(URL arg0, ResourceBundle arg1) {
-        EmergencyReports.getItems().add("Report1");
-        EmergencyReports.getItems().add("Report2");
-        EmergencyReports.getItems().add("Report3");
-        EmergencyReports.getItems().add("Report4");
-        EmergencyReports.getItems().add("Report5");
+        while (reports.isEmpty()) {
+            try {
+                Thread.currentThread().sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        for(Reports report : reports){
+            this.EmergencyReports.getItems().add(report.getReportName());
+        }
         this.EmergencyReports.setOnMouseClicked(event -> {
-            String selectedTaskName = this.EmergencyReports.getSelectionModel().getSelectedItem();
+            String selectedReportName = this.EmergencyReports.getSelectionModel().getSelectedItem();
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (selectedTaskName != null) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Report details");
-                    alert.setHeaderText("Report Details: ");
-                    alert.showAndWait();
+                if (selectedReportName != null) {
+                    for(Reports report : reports){
+                        if(report.getReportName().equals(selectedReportName)){
+                            showAlert(report.toString());
+                            break;
+                        }
+                    }
                 }
             }
         });
+    }
+
+    private void showAlert(String report) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Report details");
+        alert.setHeaderText("Report Details: ");
+        alert.setContentText(report);
+        alert.showAndWait();
     }
 
     @FXML
