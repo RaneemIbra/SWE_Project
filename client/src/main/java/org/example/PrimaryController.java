@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PrimaryController implements Initializable {
+public class PrimaryController implements Initializable,ServerResponseCallback {
     @FXML
     public AnchorPane rootBane;
     @FXML
@@ -34,6 +35,10 @@ public class PrimaryController implements Initializable {
     private Button HelpFormBTN;
     public static Users currentUser;
 
+    boolean TasksListJumper = false;
+    boolean PendingTasksJumper = false;
+    boolean ReportsJumper = false;
+    boolean MyTasksJumper = false;
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
         if (currentUser.getTitle().equals("Manager")) {
@@ -49,13 +54,59 @@ public class PrimaryController implements Initializable {
         }
     }
 
+    @Override
+    public void onResponse(String response) {
+        Platform.runLater(() -> {
+            if (response.startsWith("Ready")) {
+                if(TasksListJumper){
+                    try {
+                        TasksListJumper =false;
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("TasksList.fxml"));
+                        AnchorPane PrimaryBane = loader.load();
+                        rootBane.getChildren().setAll(PrimaryBane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else if(PendingTasksJumper){
+                    try {
+                        PendingTasksJumper = false;
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("PendingTasks.fxml"));
+                        AnchorPane PrimaryBane = loader.load();
+                        rootBane.getChildren().setAll(PrimaryBane);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }else if(MyTasksJumper){
+                    try {
+                        MyTasksJumper = false;
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("MyTasks.fxml"));
+                        AnchorPane PrimaryBane = loader.load();
+                        rootBane.getChildren().setAll(PrimaryBane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else if(ReportsJumper){
+                    try {
+                        ReportsJumper = false;
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("EmergencyReports.fxml"));
+                        AnchorPane PrimaryBane = loader.load();
+                        rootBane.getChildren().setAll(PrimaryBane);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                System.out.println("Invalid Jump");
+            }
+        });
+    }
+
     @FXML
     void onShowTaskList(ActionEvent event) {
         try {
+            TasksListJumper = true;
+            SimpleClient.getClient().setCallback(this);
             SimpleClient.getClient().sendToServer("get tasks");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("TasksList.fxml"));
-            AnchorPane tasksListPane = loader.load();
-            rootBane.getChildren().setAll(tasksListPane);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,10 +144,9 @@ public class PrimaryController implements Initializable {
     @FXML
     void onViewPendingTasks(ActionEvent event) {
         try {
-            SimpleClient.getClient().sendToServer("get unauthorized tasks");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("PendingTasks.fxml"));
-            AnchorPane PrimaryBane = loader.load();
-            rootBane.getChildren().setAll(PrimaryBane);
+            PendingTasksJumper = true;
+            SimpleClient.getClient().setCallback(this);
+            SimpleClient.getClient().sendToServer("get tasks");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,9 +155,9 @@ public class PrimaryController implements Initializable {
     @FXML
     void OnEmergencyReport(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("EmergencyReports.fxml"));
-            AnchorPane PrimaryBane = loader.load();
-            rootBane.getChildren().setAll(PrimaryBane);
+            ReportsJumper = true;
+            SimpleClient.getClient().setCallback(this);
+            SimpleClient.getClient().sendToServer("get Reports");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,9 +166,9 @@ public class PrimaryController implements Initializable {
     @FXML
     void onShowMyTasks(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MyTasks.fxml"));
-            AnchorPane PrimaryBane = loader.load();
-            rootBane.getChildren().setAll(PrimaryBane);
+            MyTasksJumper = true;
+            SimpleClient.getClient().setCallback(this);
+            SimpleClient.getClient().sendToServer("get tasks");
         } catch (IOException e) {
             e.printStackTrace();
         }

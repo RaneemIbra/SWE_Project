@@ -1,6 +1,7 @@
 package org.example;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MyTasks implements Initializable {
@@ -31,39 +34,37 @@ public class MyTasks implements Initializable {
     @FXML
     private ListView<String> volunteeringList;
 
+    public static List<Task> tasks = new ArrayList<>();
     public void initialize(URL arg0, ResourceBundle arg1) {
-        helpRequestsList.getItems().add("help1");
-        helpRequestsList.getItems().add("help2");
-        helpRequestsList.getItems().add("help3");
-        helpRequestsList.getItems().add("help4");
-        helpRequestsList.getItems().add("help5");
-        volunteeringList.getItems().add("volunteered1");
-        volunteeringList.getItems().add("volunteered2");
-        volunteeringList.getItems().add("volunteered3");
-        volunteeringList.getItems().add("volunteered4");
-        volunteeringList.getItems().add("volunteered5");
+        for (Task task : tasks) {
+            if(task.getUserName().equals(PrimaryController.currentUser.getFullName())){
+                this.helpRequestsList.getItems().addAll(task.getTaskName());
+            }
+            if(task.getVolunteer().equals(PrimaryController.currentUser.getFullName())){
+                this.volunteeringList.getItems().addAll(task.getTaskName());
+            }
+        }
         this.helpRequestsList.setOnMouseClicked(event -> {
             String S1 = this.helpRequestsList.getSelectionModel().getSelectedItem();
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (S1 != null) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Report details");
-                    alert.setHeaderText("Report Details: ");
-                    alert.showAndWait();
-                }
+                showDetails(S1);
             }
         });
         this.volunteeringList.setOnMouseClicked(event -> {
             String S1 = this.volunteeringList.getSelectionModel().getSelectedItem();
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                if (S1 != null) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Report details");
-                    alert.setHeaderText("Report Details: ");
-                    alert.showAndWait();
-                }
+                showDetails(S1);
             }
         });
+    }
+
+    void showDetails(String S1){
+        if (S1 != null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Report details");
+            alert.setHeaderText("Report Details: ");
+            alert.showAndWait();
+        }
     }
 
     @FXML
