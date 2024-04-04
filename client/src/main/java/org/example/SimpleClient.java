@@ -1,6 +1,7 @@
 package org.example;
 
 import antlr.debug.MessageAdapter;
+import javafx.scene.control.Alert;
 import org.example.ocsf.AbstractClient;
 
 import java.io.IOException;
@@ -26,16 +27,24 @@ public class SimpleClient extends AbstractClient {
         if (msg instanceof List) {
             try {
                 localList = (List<Task>) msg;
-                if(!localList.toString().startsWith("[Report")){
+                if(!localList.toString().startsWith("[Report")&&!localList.toString().startsWith("[User")){
                     TasksList.tasks.clear();
                     PendingTasks.tasks.clear();
                     MyTasks.tasks.clear();
                     for (Task task : localList) {
                         if (task.getAuthorized().equals("Authorized")) {
                             TasksList.tasks.add(task);
-                            if (task.getUserName().equals(PrimaryController.currentUser.getFullName()) ||
-                                    task.getVolunteer().equals(PrimaryController.currentUser.getFullName())) {
-                                MyTasks.tasks.add(task);
+                            if(PrimaryController.viewUser !=null){
+                                if (task.getUserName().equals(PrimaryController.viewUser.getFullName()) ||
+                                        task.getVolunteer().equals(PrimaryController.viewUser.getFullName())) {
+                                    MyTasks.tasks.add(task);
+                                }
+                            }else{
+                                if (task.getUserName().equals(PrimaryController.currentUser.getFullName()) ||
+                                        task.getVolunteer().equals(PrimaryController.currentUser.getFullName())) {
+                                    System.out.println("handle client");
+                                    MyTasks.tasks.add(task);
+                                }
                             }
                         } else if (task.getAuthorized().equals("Unauthorized")) {
                             PendingTasks.tasks.add(task);
@@ -46,6 +55,13 @@ public class SimpleClient extends AbstractClient {
                 e.printStackTrace();
             }
             try {
+                if(localList.toString().startsWith("[User")){
+                    UsersList.users = (List<Users>) msg;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            try {
                 EmergencyReports.reports = (List<Reports>) msg;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -53,7 +69,7 @@ public class SimpleClient extends AbstractClient {
             callback.onResponse("Ready");
         } else if (msg.toString().equals("exists") || msg.toString().equals("doesn't exist")
                 || msg.toString().startsWith("LogIn") || msg.toString().equals("Don't LogIn")
-                || msg.toString().equals("WrongPassword")) {
+                || msg.toString().equals("WrongPassword")||msg.toString().startsWith("Emergency")) {
             if (callback != null) {
                 callback.onResponse(msg.toString());
             }

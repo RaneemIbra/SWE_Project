@@ -41,15 +41,8 @@ public class PendingTasks implements Initializable {
 
     Task task;
     public void initialize(URL arg0, ResourceBundle arg1) {
-        while (tasks.isEmpty()) {
-            try {
-                Thread.currentThread().sleep(1);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        for (Task task : tasks) {
-            this.PendingTasks.getItems().addAll(task.getTaskName());
+        for (Task taskIt : tasks) {
+            this.PendingTasks.getItems().addAll(taskIt.getTaskName());
         }
         this.PendingTasks.setOnMouseClicked(event -> {
             S1 = this.PendingTasks.getSelectionModel().getSelectedItem();
@@ -71,8 +64,7 @@ public class PendingTasks implements Initializable {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        App appInstance = App.getInstance();
-        appInstance.EmergencyClick();
+        PrimaryController.identifiedEmergency();
     }
 
     @FXML

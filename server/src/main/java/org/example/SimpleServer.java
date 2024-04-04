@@ -141,8 +141,8 @@ public class SimpleServer extends AbstractServer {
         Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized",dueDate);
         Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized",dueDate);
         Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized",dueDate);
-        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
-        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
+        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized",dueDate);
+        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized",dueDate);
         Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
         Task task9 = new Task(1829371285, "Task9", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
         Task task10 = new Task(1829371285, "Task10", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
@@ -210,6 +210,7 @@ public class SimpleServer extends AbstractServer {
         try {
             String message = (String) msg;
             if (message.equals("get tasks")) {
+                System.out.println("handle server");
                 client.sendToClient(getAll(Task.class));
             } else if (message.startsWith("modify")) {
                 String taskid = message.split(" ")[1];
@@ -220,8 +221,30 @@ public class SimpleServer extends AbstractServer {
                 SubscribersList.add(connection);
                 message = "client added successfully";
                 client.sendToClient(message);
-            } else if (message.equals("Emergency")) {
-                System.out.println("we have an emergency");
+            } else if (message.startsWith("Emergency")) {
+                String[] temp = message.split(",");
+                LocalDateTime now = LocalDateTime.now();
+                Reports report = new Reports(temp[1], Integer.parseInt(temp[2]),
+                        Integer.parseInt(temp[3]), temp[4], now, temp[5]);
+                try {
+                    session = sessionFactory.openSession();
+                    session.beginTransaction();
+                    session.save(report);
+                    session.flush();
+                    session.getTransaction().commit();
+                } catch (Exception var5) {
+                    if (session != null && session.getTransaction().isActive()) {
+                        session.getTransaction().rollback();
+                    }
+                    var5.printStackTrace();
+                } finally {
+                    if (session != null) {
+                        session.close();
+                    }
+                }
+                System.out.println("We have an emergency. Details: ");
+                System.out.println(report);
+                client.sendToClient("Emergency call was received\nHelp is on the way\nEmergency Details:\n" + report);
             } else if (message.startsWith("Register")) {
                 String[] userData = message.split(",");
                 try {
@@ -302,6 +325,8 @@ public class SimpleServer extends AbstractServer {
                 modifyTask(Integer.parseInt(decline), "Unauthorized");
             }else if(message.equals("get Reports")){
                 client.sendToClient(getAll(Reports.class));
+            }else if(message.equals("get users")){
+                client.sendToClient(getAll(Users.class));
             }
         } catch (Exception e) {
             e.printStackTrace();

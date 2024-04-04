@@ -53,5 +53,16 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
+      <Button fx:id="UsersListBTN" layoutY="617.0" mnemonicParsing="false" onAction="#onUsersList" prefHeight="54.0" prefWidth="111.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Users List" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <Bloom />
+         </effect>
+      </Button>
    </children>
 </AnchorPane>
