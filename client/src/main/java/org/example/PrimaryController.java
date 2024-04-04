@@ -5,12 +5,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class PrimaryController implements Initializable,ServerResponseCallback {
@@ -33,17 +36,21 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
 
     @FXML
     private Button HelpFormBTN;
+    @FXML
+    private Button UsersList;
     public static Users currentUser;
-
+    public static Users viewUser;
     boolean TasksListJumper = false;
     boolean PendingTasksJumper = false;
     boolean ReportsJumper = false;
     boolean MyTasksJumper = false;
+    boolean UsersListJumper = false;
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
         if (currentUser.getTitle().equals("Manager")) {
-            ShowTaskListButton.setTranslateX(-210);
-            HelpFormBTN.setTranslateX(204);
+            ShowTaskListButton.setTranslateX(-204);
+            HelpFormBTN.setTranslateX(194);
+            showMyTasks.setTranslateX(194);
             PendingTasksBTN.setVisible(true);
             EmergecyReportBTN.setVisible(true);
         } else {
@@ -51,6 +58,7 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
             HelpFormBTN.setTranslateX(0);
             PendingTasksBTN.setVisible(false);
             EmergecyReportBTN.setVisible(false);
+            UsersList.setVisible(false);
         }
     }
 
@@ -79,6 +87,7 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
                 }else if(MyTasksJumper){
                     try {
                         MyTasksJumper = false;
+                        viewUser = null;
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("MyTasks.fxml"));
                         AnchorPane PrimaryBane = loader.load();
                         rootBane.getChildren().setAll(PrimaryBane);
@@ -94,7 +103,23 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
                     }catch (IOException e){
                         e.printStackTrace();
                     }
+                } else if (UsersListJumper) {
+                    try {
+                        UsersListJumper = false;
+                        viewUser = null;
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("UsersList.fxml"));
+                        AnchorPane PrimaryBane = loader.load();
+                        rootBane.getChildren().setAll(PrimaryBane);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
                 }
+            }else if (response.startsWith("Emergency")) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Emergency Status");
+                alert.setHeaderText("Emergency Received");
+                alert.setContentText(response);
+                alert.showAndWait();
             } else {
                 System.out.println("Invalid Jump");
             }
@@ -114,8 +139,8 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        App appInstance = App.getInstance();
-        appInstance.EmergencyClick();
+        SimpleClient.getClient().setCallback(this);
+        identifiedEmergency();
     }
 
 
@@ -172,5 +197,26 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    void onViewUsers(ActionEvent event) {
+        try {
+            UsersListJumper = true;
+            SimpleClient.getClient().setCallback(this);
+            SimpleClient.getClient().sendToServer("get users");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void identifiedEmergency(){
+        Random random = new Random();
+        double Xcoordinates = random.nextDouble();
+        double Ycoordinates = random.nextDouble();
+        String location = "X Coordinates: " + Xcoordinates + " Y Cooredinates: " + Ycoordinates;
+        App appInstance = App.getInstance();
+        appInstance.EmergencyClick("new report", 1, PrimaryController.currentUser.getUserID(),
+                PrimaryController.currentUser.getFullName(), location);
     }
 }

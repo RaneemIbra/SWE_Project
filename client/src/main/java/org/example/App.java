@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -71,14 +72,14 @@ public class App extends Application {
         });
     }
 
-    public void EmergencyClick() {
+    public void EmergencyClick(String name, int reportID, int userID, String fullName, String location) {
         try {
-            SimpleClient.getClient().sendToServer("Emergency");
+            SimpleClient.getClient().sendToServer("Emergency," + name + "," + reportID + "," + userID
+            + "," + fullName + "," + location);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
     public static void main(String[] args) {
         launch();
     }

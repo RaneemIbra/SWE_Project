@@ -11,8 +11,10 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class TasksList implements Initializable {
@@ -36,13 +38,6 @@ public class TasksList implements Initializable {
     private Task selectedTask = null;
 
     public void initialize(URL arg0, ResourceBundle arg1) {
-        while (tasks.isEmpty()) {
-            try {
-                Thread.currentThread().sleep(1);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
         for (Task task : tasks) {
             this.TasksList.getItems().addAll(task.getTaskName());
         }
@@ -129,7 +124,6 @@ public class TasksList implements Initializable {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        App appInstance = App.getInstance();
-        appInstance.EmergencyClick();
+        PrimaryController.identifiedEmergency();
     }
 }

@@ -72,8 +72,7 @@ public class HelpForm implements Initializable {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        App appInstance = App.getInstance();
-        appInstance.EmergencyClick();
+        PrimaryController.identifiedEmergency();
     }
 
     @FXML

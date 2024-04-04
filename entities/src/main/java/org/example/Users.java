@@ -105,4 +105,11 @@ public class Users implements Serializable {
     public void setTitle(String title) {
         Title = title;
     }
+
+    @Override
+    public String toString() {
+        return String.format("User Name: %s\nUser ID: %d\nUser Email Address: %s\nUser Home Address: " +
+                        "%s\nUser Phone Number: %d\nUser Group ID: %s\n", FullName, UserID, EmailAddress,
+                HomeAddress, PhoneNumber, GroupID);
+    }
 }

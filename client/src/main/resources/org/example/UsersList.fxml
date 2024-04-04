@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootBane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.UsersList">
+   <children>
+      <ImageView fitHeight="671.0" fitWidth="814.0" pickOnBounds="true">
+         <image>
+            <Image url="@images/download.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="EmergencyBTN" layoutX="292.0" layoutY="540.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#OnEmergency" prefHeight="82.0" prefWidth="230.0" style="-fx-background-color: red;" text="EMERGENCY BUTTON!" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Label fx:id="tasksLabel" layoutX="370.0" layoutY="32.0" text="Users" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="29.0" />
+         </font>
+      </Label>
+      <ListView fx:id="UsersViewList" layoutX="177.0" layoutY="106.0" prefHeight="307.0" prefWidth="461.0" style="-fx-background-color: white;" />
+      <Button fx:id="UserTasks" layoutX="177.0" layoutY="443.0" mnemonicParsing="false" onAction="#OnShowUserTasks" prefHeight="61.0" prefWidth="151.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="User Tasks" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="homePageBTN" layoutY="617.0" mnemonicParsing="false" onAction="#onHomePageClick" prefHeight="54.0" prefWidth="111.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="HomePage" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <Bloom />
+         </effect>
+      </Button>
+      <Button fx:id="showUserDetails" layoutX="487.0" layoutY="443.0" mnemonicParsing="false" onAction="#onShowUserDetails" prefHeight="61.0" prefWidth="151.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="User Details" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+   </children>
+</AnchorPane>

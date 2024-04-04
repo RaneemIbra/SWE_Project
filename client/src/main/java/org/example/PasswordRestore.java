@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class PasswordRestore {
 
@@ -33,8 +34,7 @@ public class PasswordRestore {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        App appInstance = App.getInstance();
-        appInstance.EmergencyClick();
+        LogIn.UnidentifiedEmergency();
     }
 
     @FXML

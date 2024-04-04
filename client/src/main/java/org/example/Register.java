@@ -100,15 +100,7 @@ public class Register implements Initializable,ServerResponseCallback  {
 
     @FXML
     void OnEmergency(ActionEvent event) {
-        System.out.println(user.getUserID());
-        System.out.println(user.getFullName());
-        System.out.println(user.getPassword());
-        System.out.println(user.getEmailAddress());
-        System.out.println(user.getHomeAddress());
-        System.out.println(user.getPhoneNumber());
-        System.out.println(user.getGroupID());
-        App appInstance = App.getInstance();
-        appInstance.EmergencyClick();
+        LogIn.UnidentifiedEmergency();
     }
 
     @FXML
