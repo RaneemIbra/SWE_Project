@@ -112,16 +112,16 @@ public class SimpleServer extends AbstractServer {
         }
     }
 
-    public static void generateReportsTable(){
+    public static void generateReportsTable() {
         LocalDateTime now = LocalDateTime.now();
-        Reports report1 = new Reports("report1",1231232, 2128219878, "Eden Daddo", now, "blackburn");
-        Reports report2 = new Reports("report2",1231232, 2128219878, "Eden Daddo", now, "blackburn");
-        Reports report3 = new Reports("report3",1231232, 2128219878, "Leen Yakov", now, "london");
-        Reports report4 = new Reports("report4",1231232, 2128219878, "Eden Daddo", now, "blackburn");
-        Reports report5 = new Reports("report5",1231232, 2128219878, "Rami Benet", now, "liverpool");
-        Reports report6 = new Reports("report6",1231232, 2128219878, "Rami Benet", now, "liverpool");
-        Reports report7 = new Reports("report7",1231232, 2128219878, "Rami Benet", now, "liverpool");
-        Reports report8 = new Reports("report8",1231232, 2128219878, "Karen Yakov", now, "london");
+        Reports report1 = new Reports("report1", 1231232, 2128219878, "Eden Daddo", now, "blackburn");
+        Reports report2 = new Reports("report2", 1231232, 2128219878, "Eden Daddo", now, "blackburn");
+        Reports report3 = new Reports("report3", 1231232, 2128219878, "Leen Yakov", now, "london");
+        Reports report4 = new Reports("report4", 1231232, 2128219878, "Eden Daddo", now, "blackburn");
+        Reports report5 = new Reports("report5", 1231232, 2128219878, "Rami Benet", now, "liverpool");
+        Reports report6 = new Reports("report6", 1231232, 2128219878, "Rami Benet", now, "liverpool");
+        Reports report7 = new Reports("report7", 1231232, 2128219878, "Rami Benet", now, "liverpool");
+        Reports report8 = new Reports("report8", 1231232, 2128219878, "Karen Yakov", now, "london");
         session.save(report1);
         session.save(report2);
         session.save(report3);
@@ -136,16 +136,16 @@ public class SimpleServer extends AbstractServer {
     public static void generateTasksTable() {
         LocalDateTime now = LocalDateTime.now();
         String dueDate = now.toString();
-        Task task1 = new Task(1829371289, "Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none", "Authorized",dueDate);
-        Task task2 = new Task(1829371284, "Task2", "Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized",dueDate);
-        Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized",dueDate);
-        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized",dueDate);
-        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized",dueDate);
-        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized",dueDate);
-        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized",dueDate);
-        Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
-        Task task9 = new Task(1829371285, "Task9", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
-        Task task10 = new Task(1829371285, "Task10", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized",dueDate);
+        Task task1 = new Task(1829371289, "Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none", "Authorized", dueDate);
+        Task task2 = new Task(1829371284, "Task2", "Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate);
+        Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate);
+        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized", dueDate);
+        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized", dueDate);
+        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate);
+        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate);
+        Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate);
+        Task task9 = new Task(1829371285, "Task9", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate);
+        Task task10 = new Task(1829371285, "Task10", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate);
 
         session.save(task1);
         session.save(task2);
@@ -210,7 +210,6 @@ public class SimpleServer extends AbstractServer {
         try {
             String message = (String) msg;
             if (message.equals("get tasks")) {
-                System.out.println("handle server");
                 client.sendToClient(getAll(Task.class));
             } else if (message.startsWith("modify")) {
                 String taskid = message.split(" ")[1];
@@ -323,10 +322,43 @@ public class SimpleServer extends AbstractServer {
             } else if (message.startsWith("Task Declined,")) {
                 String decline = message.split(",")[1];
                 modifyTask(Integer.parseInt(decline), "Unauthorized");
-            }else if(message.equals("get Reports")){
+            } else if (message.equals("get Reports")) {
                 client.sendToClient(getAll(Reports.class));
-            }else if(message.equals("get users")){
+            } else if (message.equals("get users")) {
                 client.sendToClient(getAll(Users.class));
+            } else if (message.startsWith("Change")) {
+                String[] userData = message.split(",");
+                try {
+                    session = sessionFactory.openSession();
+                    session.beginTransaction();
+                    CriteriaBuilder builder = session.getCriteriaBuilder();
+                    CriteriaQuery<Users> query = builder.createQuery(Users.class);
+                    Root<Users> root = query.from(Users.class);
+                    query.where(builder.equal(root.get("EmailAddress"), userData[1]));
+                    List<Users> users = session.createQuery(query).getResultList();
+                    if (!users.isEmpty()) {
+                        for (Users user1 : users) {
+                            if (user1.getEmailAddress().equals(userData[1])) {
+                                System.out.println(userData[1]);
+                                System.out.println(userData[2]);
+                                user1.setPassword(passwordEncrypt(userData[2]));
+                                client.sendToClient("Changed");
+                            }
+                        }
+                    } else {
+                        client.sendToClient("Don't Exist");
+                    }
+                    session.getTransaction().commit();
+                } catch (Exception var5) {
+                    if (session != null && session.getTransaction().isActive()) {
+                        session.getTransaction().rollback();
+                    }
+                    var5.printStackTrace();
+                } finally {
+                    if (session != null) {
+                        session.close();
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
