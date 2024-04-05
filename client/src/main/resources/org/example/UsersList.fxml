@@ -17,7 +17,7 @@
             <Image url="@images/download.png" />
          </image>
       </ImageView>
-      <Button fx:id="EmergencyBTN" layoutX="292.0" layoutY="540.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#OnEmergency" prefHeight="82.0" prefWidth="230.0" style="-fx-background-color: red;" text="EMERGENCY BUTTON!" textFill="WHITE">
+      <Button fx:id="EmergencyBTN" layoutX="292.0" layoutY="566.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#OnEmergency" prefHeight="82.0" prefWidth="230.0" style="-fx-background-color: red;" text="EMERGENCY BUTTON!" textFill="WHITE">
          <font>
             <Font name="System Bold" size="19.0" />
          </font>

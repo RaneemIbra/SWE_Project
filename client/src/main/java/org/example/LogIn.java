@@ -88,7 +88,7 @@ public class LogIn implements Initializable, ServerResponseCallback {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else {
+            } else if(!response.equals("Ready")){
                 System.out.println("Invalid Account");
             }
         });
@@ -109,6 +109,7 @@ public class LogIn implements Initializable, ServerResponseCallback {
         } else {
             SimpleClient.getClient().setCallback(this);
             try {
+                SimpleClient.getClient().sendToServer("get notifs");
                 SimpleClient.getClient().sendToServer("LogIn," + user.getEmailAddress() +
                         "," + user.getPassword());
             } catch (IOException e) {

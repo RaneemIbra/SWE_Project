@@ -62,7 +62,7 @@
             </Blend>
          </effect>
       </Button>
-      <Button fx:id="EmergencyBTN" layoutX="292.0" layoutY="540.0" mnemonicParsing="false" onAction="#OnEmergencyClick" prefHeight="82.0" prefWidth="230.0" style="-fx-background-color: red;" text="EMERGENCY BUTTON!" textFill="WHITE">
+      <Button fx:id="EmergencyBTN" layoutX="292.0" layoutY="566.0" mnemonicParsing="false" onAction="#OnEmergencyClick" prefHeight="82.0" prefWidth="230.0" style="-fx-background-color: red;" text="EMERGENCY BUTTON!" textFill="WHITE">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

@@ -37,6 +37,7 @@ public class SimpleServer extends AbstractServer {
             generateUsersTable();
             generateTasksTable();
             generateReportsTable();
+            generateMessagesTable();
             session.getTransaction().commit();
         } catch (Exception var5) {
             if (session != null && session.getTransaction().isActive()) {
@@ -55,6 +56,7 @@ public class SimpleServer extends AbstractServer {
         configuration.addAnnotatedClass(Task.class);
         configuration.addAnnotatedClass(Users.class);
         configuration.addAnnotatedClass(Reports.class);
+        configuration.addAnnotatedClass(NotificationMessage.class);
         ServiceRegistry serviceRegistry = (new StandardServiceRegistryBuilder())
                 .applySettings(configuration.getProperties()).build();
         return configuration.buildSessionFactory(serviceRegistry);
@@ -130,6 +132,21 @@ public class SimpleServer extends AbstractServer {
         session.save(report6);
         session.save(report7);
         session.save(report8);
+        session.flush();
+    }
+
+    public static void generateMessagesTable() {
+        LocalDateTime now = LocalDateTime.now();
+        NotificationMessage message1 = new NotificationMessage(1, "Incompatible", now, "Yohanan Bloomfield", "Louis Litt");
+        NotificationMessage message2 = new NotificationMessage(1, "incomplete", now, "Yohanan Bloomfield", "Karen Yakov");
+        NotificationMessage message3 = new NotificationMessage(1, "Lack of info", now, "Yohanan Bloomfield", "Louis Litt");
+        NotificationMessage message4 = new NotificationMessage(1, "simple task", now, "Yohanan Bloomfield", "Karen Yakov");
+        NotificationMessage message5 = new NotificationMessage(1, "try again", now, "Yohanan Bloomfield", "Louis Litt");
+        session.save(message1);
+        session.save(message2);
+        session.save(message3);
+        session.save(message4);
+        session.save(message5);
         session.flush();
     }
 
@@ -225,22 +242,10 @@ public class SimpleServer extends AbstractServer {
                 LocalDateTime now = LocalDateTime.now();
                 Reports report = new Reports(temp[1], Integer.parseInt(temp[2]),
                         Integer.parseInt(temp[3]), temp[4], now, temp[5]);
-                try {
-                    session = sessionFactory.openSession();
-                    session.beginTransaction();
-                    session.save(report);
-                    session.flush();
-                    session.getTransaction().commit();
-                } catch (Exception var5) {
-                    if (session != null && session.getTransaction().isActive()) {
-                        session.getTransaction().rollback();
-                    }
-                    var5.printStackTrace();
-                } finally {
-                    if (session != null) {
-                        session.close();
-                    }
-                }
+                NotificationMessage newMessage = new NotificationMessage(1, report.getReportName(),
+                        now, report.getFullName(), "HelpCenter");
+                add(report);
+                add(newMessage);
                 System.out.println("We have an emergency. Details: ");
                 System.out.println(report);
                 client.sendToClient("Emergency call was received\nHelp is on the way\nEmergency Details:\n" + report);
@@ -288,6 +293,7 @@ public class SimpleServer extends AbstractServer {
                             client.sendToClient("LogIn," + user1.getFullName() + "," + user1.getUserID()
                                     + "," + user1.getEmailAddress() + "," + user1.getPassword() + "," + user1.getHomeAddress()
                                     + "," + user1.getPhoneNumber() + "," + user1.getGroupID() + "," + user1.getTitle());
+                            client.sendToClient(getAll(NotificationMessage.class));
                         } else {
                             client.sendToClient("WrongPassword");
                         }
@@ -300,22 +306,7 @@ public class SimpleServer extends AbstractServer {
                 LocalDateTime now = LocalDateTime.now();
                 Task tempTask = new Task(1, HelpRequest[6], HelpRequest[1] + " " + HelpRequest[2], HelpRequest[4]
                         , Integer.parseInt(HelpRequest[5]), "Pending", now, "none", "Unauthorized", HelpRequest[3]);
-                try {
-                    session = sessionFactory.openSession();
-                    session.beginTransaction();
-                    session.save(tempTask);
-                    session.flush();
-                    session.getTransaction().commit();
-                } catch (Exception var5) {
-                    if (session != null && session.getTransaction().isActive()) {
-                        session.getTransaction().rollback();
-                    }
-                    var5.printStackTrace();
-                } finally {
-                    if (session != null) {
-                        session.close();
-                    }
-                }
+                add(tempTask);
             } else if (message.startsWith("Task Accepted,")) {
                 String accept = message.split(",")[1];
                 modifyTask(Integer.parseInt(accept), "Authorized");
@@ -326,6 +317,8 @@ public class SimpleServer extends AbstractServer {
                 client.sendToClient(getAll(Reports.class));
             } else if (message.equals("get users")) {
                 client.sendToClient(getAll(Users.class));
+            } else if (message.equals("get notifs")) {
+                client.sendToClient(getAll(NotificationMessage.class));
             } else if (message.startsWith("Change")) {
                 String[] userData = message.split(",");
                 try {
@@ -359,11 +352,38 @@ public class SimpleServer extends AbstractServer {
                         session.close();
                     }
                 }
+            } else if (message.startsWith("Decline Message")) {
+                String notification = message.split(",")[1];
+                String sender = message.split(",")[2];
+                String receiver = message.split(",")[3];
+                LocalDateTime now = LocalDateTime.now();
+                NotificationMessage notif = new NotificationMessage(1, notification, now, sender, receiver);
+                add(notif);
+                client.sendToClient(getAll(NotificationMessage.class));
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (session != null && session.getTransaction().isActive()) {
                 session.getTransaction().rollback();
+            }
+        }
+    }
+
+    public void add(Object object) {
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.save(object);
+            session.flush();
+            session.getTransaction().commit();
+        } catch (Exception var5) {
+            if (session != null && session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            var5.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
             }
         }
     }
