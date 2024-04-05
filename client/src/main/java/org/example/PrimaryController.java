@@ -8,11 +8,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -40,6 +44,12 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
     private Button UsersList;
     public static Users currentUser;
     public static Users viewUser;
+
+    @FXML
+    private ListView<String> MessageList;
+
+    public static List<NotificationMessage> notifList=new ArrayList<>();
+    private NotificationMessage selectedNotif;
     boolean TasksListJumper = false;
     boolean PendingTasksJumper = false;
     boolean ReportsJumper = false;
@@ -47,19 +57,58 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
     boolean UsersListJumper = false;
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
+        for (NotificationMessage notif : notifList) {
+            if(notif.getReceiver().equals(currentUser.getFullName())){
+                this.MessageList.getItems().addAll(notif.getMessage());
+            }
+        }
+        this.MessageList.setOnMouseClicked(event -> {
+            String selectedMessageName = this.MessageList.getSelectionModel().getSelectedItem();
+            if (selectedMessageName != null) {
+                for (NotificationMessage notif : notifList) {
+                    if (notif.getMessage().equals(selectedMessageName)) {
+                        selectedNotif = notif;
+                        break;
+                    }
+                }
+            }
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                try {
+                    if (selectedNotif != null) {
+                        showAlert(selectedNotif.toString());
+                        SimpleClient.getClient().sendToServer(selectedNotif.toString());
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
         if (currentUser.getTitle().equals("Manager")) {
-            ShowTaskListButton.setTranslateX(-204);
-            HelpFormBTN.setTranslateX(194);
-            showMyTasks.setTranslateX(194);
             PendingTasksBTN.setVisible(true);
             EmergecyReportBTN.setVisible(true);
+            UsersList.setVisible(true);
         } else {
-            ShowTaskListButton.setTranslateX(0);
-            HelpFormBTN.setTranslateX(0);
+            HelpFormBTN.setTranslateX(-355);
+            showMyTasks.setTranslateX(-355);
+            MessageList.setTranslateX(355);
+            MessageList.setTranslateY(-369);
+            MessageList.setPrefWidth(265);
+            MessageList.setPrefHeight(430);
+            showMyTasks.setTranslateY(33);
+            ShowTaskListButton.setTranslateY(67);
             PendingTasksBTN.setVisible(false);
             EmergecyReportBTN.setVisible(false);
             UsersList.setVisible(false);
         }
+    }
+
+    private void showAlert(String notif) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Message details");
+        alert.setHeaderText("Message Details: ");
+        alert.setContentText(notif);
+        alert.showAndWait();
     }
 
     @Override

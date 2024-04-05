@@ -27,7 +27,8 @@ public class SimpleClient extends AbstractClient {
         if (msg instanceof List) {
             try {
                 localList = (List<Task>) msg;
-                if(!localList.toString().startsWith("[Report")&&!localList.toString().startsWith("[User")){
+                if(!localList.toString().startsWith("[Report")&&!localList.toString().startsWith("[User")
+                &&!localList.toString().startsWith("[Message")){
                     TasksList.tasks.clear();
                     PendingTasks.tasks.clear();
                     MyTasks.tasks.clear();
@@ -62,6 +63,13 @@ public class SimpleClient extends AbstractClient {
                 e.printStackTrace();
             }
             try {
+                if(localList.toString().startsWith("[Message")){
+                    PrimaryController.notifList = (List<NotificationMessage>) msg;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            try {
                 EmergencyReports.reports = (List<Reports>) msg;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -69,8 +77,17 @@ public class SimpleClient extends AbstractClient {
             callback.onResponse("Ready");
         } else if (msg.toString().equals("exists") || msg.toString().equals("doesn't exist")
                 || msg.toString().startsWith("LogIn") || msg.toString().equals("Don't LogIn")
-                || msg.toString().equals("WrongPassword")||msg.toString().startsWith("Emergency")|| msg.equals("Changed")) {
+                || msg.toString().equals("WrongPassword")|| msg.equals("Changed")) {
             if (callback != null) {
+                callback.onResponse(msg.toString());
+            }
+        }else if(msg.toString().startsWith("Emergency")){
+            try {
+                SimpleClient.getClient().sendToServer("get notifs");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            if(callback!=null){
                 callback.onResponse(msg.toString());
             }
         }

@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 
@@ -14,7 +15,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PendingTasks implements Initializable {
 
@@ -97,6 +100,18 @@ public class PendingTasks implements Initializable {
         if (S1 != null) {
             PendingTasks.getItems().remove(S1);
         }
+        AtomicReference<String> Message = new AtomicReference<>("");
+        TextInputDialog Reason = new TextInputDialog();
+        Reason.setTitle("Declined Reason");
+        Reason.setHeaderText("Please enter the reason for declination:");
+        Optional<String> result1 = Reason.showAndWait();
+        result1.ifPresent(reason -> {
+            try {
+                Message.set(reason);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Task Declined");
         alert.setHeaderText("Task Details: ");
@@ -104,6 +119,8 @@ public class PendingTasks implements Initializable {
         alert.showAndWait();
         try {
             SimpleClient.getClient().sendToServer("Task Declined," + task.getTaskID());
+            SimpleClient.getClient().sendToServer("Decline Message," + Message.get()
+                    + "," + PrimaryController.currentUser.getFullName() + "," + task.getUserName());
         }catch (IOException e){
             e.printStackTrace();
         }
