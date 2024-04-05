@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class PrimaryController implements Initializable,ServerResponseCallback {
+public class PrimaryController implements Initializable, ServerResponseCallback {
     @FXML
     public AnchorPane rootBane;
     @FXML
@@ -48,17 +48,18 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
     @FXML
     private ListView<String> MessageList;
 
-    public static List<NotificationMessage> notifList=new ArrayList<>();
+    public static List<NotificationMessage> notifList = new ArrayList<>();
     private NotificationMessage selectedNotif;
     boolean TasksListJumper = false;
     boolean PendingTasksJumper = false;
     boolean ReportsJumper = false;
     boolean MyTasksJumper = false;
     boolean UsersListJumper = false;
+
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
         for (NotificationMessage notif : notifList) {
-            if(notif.getReceiver().equals(currentUser.getFullName())){
+            if (notif.getReceiver().equals(currentUser.getFullName()) && !notif.getSender().equals(currentUser.getFullName())) {
                 this.MessageList.getItems().addAll(notif.getMessage());
             }
         }
@@ -73,14 +74,9 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
                 }
             }
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                try {
-                    if (selectedNotif != null) {
-                        showAlert(selectedNotif.toString());
-                        SimpleClient.getClient().sendToServer(selectedNotif.toString());
-                    }
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+
+                if (selectedNotif != null) {
+                    showAlert(selectedNotif.toString());
                 }
             }
         });
@@ -115,25 +111,25 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
     public void onResponse(String response) {
         Platform.runLater(() -> {
             if (response.startsWith("Ready")) {
-                if(TasksListJumper){
+                if (TasksListJumper) {
                     try {
-                        TasksListJumper =false;
+                        TasksListJumper = false;
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("TasksList.fxml"));
                         AnchorPane PrimaryBane = loader.load();
                         rootBane.getChildren().setAll(PrimaryBane);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }else if(PendingTasksJumper){
+                } else if (PendingTasksJumper) {
                     try {
                         PendingTasksJumper = false;
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("PendingTasks.fxml"));
                         AnchorPane PrimaryBane = loader.load();
                         rootBane.getChildren().setAll(PrimaryBane);
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }else if(MyTasksJumper){
+                } else if (MyTasksJumper) {
                     try {
                         MyTasksJumper = false;
                         viewUser = null;
@@ -143,13 +139,13 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }else if(ReportsJumper){
+                } else if (ReportsJumper) {
                     try {
                         ReportsJumper = false;
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("EmergencyReports.fxml"));
                         AnchorPane PrimaryBane = loader.load();
                         rootBane.getChildren().setAll(PrimaryBane);
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else if (UsersListJumper) {
@@ -159,11 +155,11 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("UsersList.fxml"));
                         AnchorPane PrimaryBane = loader.load();
                         rootBane.getChildren().setAll(PrimaryBane);
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-            }else if (response.startsWith("Emergency")) {
+            } else if (response.startsWith("Emergency")) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Emergency Status");
                 alert.setHeaderText("Emergency Received");
@@ -259,7 +255,7 @@ public class PrimaryController implements Initializable,ServerResponseCallback {
         }
     }
 
-    public static void identifiedEmergency(){
+    public static void identifiedEmergency() {
         Random random = new Random();
         double Xcoordinates = random.nextDouble();
         double Ycoordinates = random.nextDouble();

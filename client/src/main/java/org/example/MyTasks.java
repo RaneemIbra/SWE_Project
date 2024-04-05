@@ -29,6 +29,11 @@ public class MyTasks implements Initializable {
     private Button homePageBTN;
     @FXML
     private Button UsersListBTN;
+    @FXML
+    private Button ShowTaskBTN;
+
+    @FXML
+    private Button TaskDone;
 
     @FXML
     private AnchorPane rootBane;
@@ -37,7 +42,7 @@ public class MyTasks implements Initializable {
     private ListView<String> volunteeringList;
 
     public static List<Task> tasks = new ArrayList<>();
-
+    String S1;
     Task task;
     public void initialize(URL arg0, ResourceBundle arg1) {
         if(PrimaryController.viewUser !=null){
@@ -66,7 +71,7 @@ public class MyTasks implements Initializable {
         }
 
         this.helpRequestsList.setOnMouseClicked(event -> {
-            String S1 = this.helpRequestsList.getSelectionModel().getSelectedItem();
+            S1 = this.helpRequestsList.getSelectionModel().getSelectedItem();
             for (Task task1 : tasks) {
                 if (task1.getTaskName().equals(S1)) {
                     task = task1;
@@ -78,7 +83,7 @@ public class MyTasks implements Initializable {
             }
         });
         this.volunteeringList.setOnMouseClicked(event -> {
-            String S1 = this.volunteeringList.getSelectionModel().getSelectedItem();
+            S1 = this.volunteeringList.getSelectionModel().getSelectedItem();
             for (Task task1 : tasks) {
                 if (task1.getTaskName().equals(S1)) {
                     task = task1;
@@ -126,6 +131,31 @@ public class MyTasks implements Initializable {
             rootBane.getChildren().setAll(PrimaryBane);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void onShowTaskDetails(ActionEvent event) {
+        showDetails(S1);
+    }
+
+    @FXML
+    void onTaskDone(ActionEvent event) {
+        if (S1 != null) {
+            volunteeringList.getItems().remove(S1);
+        }
+        if(!task.getUserName().equals(PrimaryController.currentUser.getFullName())){
+            try {
+                SimpleClient.getClient().sendToServer("Task Completed," + task.getTaskID() + ","
+                        +PrimaryController.currentUser.getGroupID() + "," + PrimaryController.currentUser.getFullName());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Task completed");
+                alert.setHeaderText("Task with the following details was completed: ");
+                alert.setContentText(task.toString());
+                alert.showAndWait();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
         }
     }
 }
