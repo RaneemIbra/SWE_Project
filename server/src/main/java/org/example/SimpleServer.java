@@ -68,8 +68,10 @@ public class SimpleServer extends AbstractServer {
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<T> query = builder.createQuery(object);
             Root<T> root = query.from(object);
+
             query.select(root);
             return session.createQuery(query).getResultList();
+
         } catch (Exception e) {
             e.printStackTrace();
             if (session != null && session.getTransaction().isActive()) {
@@ -97,7 +99,7 @@ public class SimpleServer extends AbstractServer {
                     task.setState("in progress");
                 } else if (msg.equals("Authorized")) {
                     task.setAuthorized("Authorized");
-                } else if (msg.equals("Unauthorized")) {
+                } else if (msg.equals("Unauthorized") || msg.equals("Task Completed")) {
                     session.delete(task);
                 }
             }
@@ -352,14 +354,35 @@ public class SimpleServer extends AbstractServer {
                         session.close();
                     }
                 }
-            } else if (message.startsWith("Decline Message")) {
-                String notification = message.split(",")[1];
-                String sender = message.split(",")[2];
-                String receiver = message.split(",")[3];
+            } else if (message.startsWith("Message")) {
+                String notification;
+                if(message.startsWith("Message Decline")){
+                    notification = message.split(",")[3];
+                }else{
+                    notification = "Task was accepted";
+                }
+                String sender = message.split(",")[1];
+                String receiver = message.split(",")[2];
+                System.out.println(sender);
+                System.out.println(receiver);
                 LocalDateTime now = LocalDateTime.now();
                 NotificationMessage notif = new NotificationMessage(1, notification, now, sender, receiver);
                 add(notif);
                 client.sendToClient(getAll(NotificationMessage.class));
+            } else if (message.startsWith("Task Completed")) {
+                LocalDateTime now = LocalDateTime.now();
+                String taskID = message.split(",")[1];
+                int groupID = Integer.parseInt(message.split(",")[2]);
+                String sender = message.split(",")[3];
+                List<Users> managerFind = getAll(Users.class);
+                for(Users user : managerFind){
+                    if(user.getGroupID()== groupID){
+                        NotificationMessage notif = new NotificationMessage(1, "Task"+taskID+ " was completed",
+                                now, sender, user.getFullName());
+                        add(notif);
+                    }
+                }
+                modifyTask(Integer.parseInt(taskID), "Task Completed");
             }
         } catch (Exception e) {
             e.printStackTrace();

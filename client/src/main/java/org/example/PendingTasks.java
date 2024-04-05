@@ -82,6 +82,8 @@ public class PendingTasks implements Initializable {
         alert.showAndWait();
         try {
             SimpleClient.getClient().sendToServer("Task Accepted," + task.getTaskID());
+            SimpleClient.getClient().sendToServer("Message Accept," + PrimaryController.currentUser.getFullName()
+                    + "," + task.getUserName());
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -119,8 +121,8 @@ public class PendingTasks implements Initializable {
         alert.showAndWait();
         try {
             SimpleClient.getClient().sendToServer("Task Declined," + task.getTaskID());
-            SimpleClient.getClient().sendToServer("Decline Message," + Message.get()
-                    + "," + PrimaryController.currentUser.getFullName() + "," + task.getUserName());
+            SimpleClient.getClient().sendToServer("Message Decline,"+ PrimaryController.currentUser.getFullName()
+                    + "," + task.getUserName() + "," + Message.get());
         }catch (IOException e){
             e.printStackTrace();
         }

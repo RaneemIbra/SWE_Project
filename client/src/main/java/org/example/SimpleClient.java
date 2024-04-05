@@ -43,7 +43,6 @@ public class SimpleClient extends AbstractClient {
                             }else{
                                 if (task.getUserName().equals(PrimaryController.currentUser.getFullName()) ||
                                         task.getVolunteer().equals(PrimaryController.currentUser.getFullName())) {
-                                    System.out.println("handle client");
                                     MyTasks.tasks.add(task);
                                 }
                             }

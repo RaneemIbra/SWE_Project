@@ -64,5 +64,27 @@
             <Bloom />
          </effect>
       </Button>
+      <Button fx:id="ShowTaskBTN" layoutX="533.0" layoutY="519.0" mnemonicParsing="false" onAction="#onShowTaskDetails" prefHeight="61.0" prefWidth="151.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Task Details" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="TaskDone" layoutX="128.0" layoutY="519.0" mnemonicParsing="false" onAction="#onTaskDone" prefHeight="61.0" prefWidth="151.0" style="-fx-border-color: white; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-color: transparent; -fx-border-radius: 5px;" text="Task Submit" textFill="WHITE" underline="true">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <effect>
+            <Bloom />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>
