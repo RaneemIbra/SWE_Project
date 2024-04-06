@@ -18,8 +18,10 @@ public class Users implements Serializable {
     int PhoneNumber;
     int GroupID;
     String Title;
+    boolean Active;
 
-    public Users(String fullName, String password, int userID, String emailAddress, String homeAddress, int phoneNumber, int groupID, String title) {
+    public Users(String fullName, String password, int userID, String emailAddress,
+                 String homeAddress, int phoneNumber, int groupID, String title, boolean active) {
         FullName = fullName;
         UserID = userID;
         EmailAddress = emailAddress;
@@ -28,6 +30,7 @@ public class Users implements Serializable {
         GroupID = groupID;
         Title = title;
         Password = password;
+        Active =active;
     }
 
     public Users() {
@@ -39,8 +42,16 @@ public class Users implements Serializable {
         GroupID = 0;
         Title = "User";
         Password = "";
+        Active = false;
     }
 
+    public boolean isActive() {
+        return Active;
+    }
+
+    public void setActive(boolean active) {
+        this.Active = active;
+    }
     public String getPassword() {
         return Password;
     }

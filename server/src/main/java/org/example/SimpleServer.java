@@ -63,29 +63,31 @@ public class SimpleServer extends AbstractServer {
     }
 
     private static <T> List<T> getAll(Class<T> object) {
+        Session session1 = null;
         try {
-            session = sessionFactory.openSession();
-            CriteriaBuilder builder = session.getCriteriaBuilder();
+            session1 = sessionFactory.openSession();
+            System.out.println(session);
+            CriteriaBuilder builder = session1.getCriteriaBuilder();
             CriteriaQuery<T> query = builder.createQuery(object);
             Root<T> root = query.from(object);
 
             query.select(root);
-            return session.createQuery(query).getResultList();
+            return session1.createQuery(query).getResultList();
 
         } catch (Exception e) {
             e.printStackTrace();
-            if (session != null && session.getTransaction().isActive()) {
-                session.getTransaction().rollback();
+            if (session1 != null && session1.getTransaction().isActive()) {
+                session1.getTransaction().rollback();
             }
         } finally {
-            if (session != null) {
-                session.close();
+            if (session1 != null) {
+                session1.close();
             }
         }
         return null;
     }
 
-    private static void modifyTask(int TaskID, String msg) {
+    private static void modifyTask(int TaskID, String msg, String name) {
         try {
             session = sessionFactory.openSession();
             session.beginTransaction();
@@ -97,6 +99,7 @@ public class SimpleServer extends AbstractServer {
             for (Task task : tasks) {
                 if (msg.equals("TasksList")) {
                     task.setState("in progress");
+                    task.setVolunteer(name);
                 } else if (msg.equals("Authorized")) {
                     task.setAuthorized("Authorized");
                 } else if (msg.equals("Unauthorized") || msg.equals("Task Completed")) {
@@ -125,7 +128,7 @@ public class SimpleServer extends AbstractServer {
         Reports report5 = new Reports("report5", 1231232, 2128219878, "Rami Benet", now, "liverpool");
         Reports report6 = new Reports("report6", 1231232, 2128219878, "Rami Benet", now, "liverpool");
         Reports report7 = new Reports("report7", 1231232, 2128219878, "Rami Benet", now, "liverpool");
-        Reports report8 = new Reports("report8", 1231232, 2128219878, "Karen Yakov", now, "london");
+        Reports report8 = new Reports("report8", 1231232, 2128219878, "Karen Yakov", now.minusHours(3), "london");
         session.save(report1);
         session.save(report2);
         session.save(report3);
@@ -158,8 +161,8 @@ public class SimpleServer extends AbstractServer {
         Task task1 = new Task(1829371289, "Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none", "Authorized", dueDate);
         Task task2 = new Task(1829371284, "Task2", "Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate);
         Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate);
-        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized", dueDate);
-        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "Pending", now, "Eden Daddo", "Authorized", dueDate);
+        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "in progress", now, "Eden Daddo", "Authorized", dueDate);
+        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "in progress", now, "Eden Daddo", "Authorized", dueDate);
         Task task6 = new Task(1829371285, "Task6", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate);
         Task task7 = new Task(1829371285, "Task7", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate);
         Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate);
@@ -180,14 +183,14 @@ public class SimpleServer extends AbstractServer {
     }
 
     public static void generateUsersTable() {
-        Users user1 = new Users("Eden Daddo", passwordEncrypt("Eden11"), 2128219878, "edenDado@gmail.com", "Haifa Remot Remez Haviva Reich 54", 547823641, 1, "User");
-        Users user2 = new Users("Karen Yakov", passwordEncrypt("Karen11"), 2127726318, "karenYakov@gmail.com", "Haifa Remot Alon Dovnov 18", 547374388, 2, "User");
-        Users user3 = new Users("Leen Yakov", passwordEncrypt("Leen12"), 1823718982, "leenYakov@gmail.com", "Haifa Remot Alon Dovnov 16", 518723618, 2, "User");
-        Users user4 = new Users("Rami Benet", passwordEncrypt("Rami11"), 2138291782, "ramiBenet@gmail.com", "Haifa Remot Remez Haviva Reich 60", 534289782, 1, "User");
-        Users user5 = new Users("Abo Majd", passwordEncrypt("Majd5"), 1212323982, "aboMajd@gmail.com", "Haifa Remot Remez Haviva Reich 40", 541271872, 3, "User");
-        Users user6 = new Users("Yonatan Boris", passwordEncrypt("Yonatan12"), 1728631726, "yonatanBoris@gmail.com", "Haifa Neve Shanan Netiv Hen 12", 541782631, 3, "User");
-        Users user7 = new Users("Louis Litt", passwordEncrypt("Louis15"), 1237298379, "louisLitt@gmail.com", "Haifa Neve Shanan Netiv Hen 10", 576718722, 2, "User");
-        Users user8 = new Users("Yohanan Bloomfield", passwordEncrypt("Yohanan16"), 1213798179, "yohananBloomfield@gmail.com", "Haifa Neve Shanan Hanita 24", 542882281, 1, "Manager");
+        Users user1 = new Users("Eden Daddo", passwordEncrypt("Eden11"), 2128219878, "edenDado@gmail.com", "Haifa Remot Remez Haviva Reich 54", 547823641, 1, "User", false);
+        Users user2 = new Users("Karen Yakov", passwordEncrypt("Karen11"), 2127726318, "karenYakov@gmail.com", "Haifa Remot Alon Dovnov 18", 547374388, 2, "User", false);
+        Users user3 = new Users("Leen Yakov", passwordEncrypt("Leen12"), 1823718982, "leenYakov@gmail.com", "Haifa Remot Alon Dovnov 16", 518723618, 2, "User", false);
+        Users user4 = new Users("Rami Benet", passwordEncrypt("Rami11"), 2138291782, "ramiBenet@gmail.com", "Haifa Remot Remez Haviva Reich 60", 534289782, 1, "User", false);
+        Users user5 = new Users("Abo Majd", passwordEncrypt("Majd5"), 1212323982, "aboMajd@gmail.com", "Haifa Remot Remez Haviva Reich 40", 541271872, 3, "User", false);
+        Users user6 = new Users("Yonatan Boris", passwordEncrypt("Yonatan12"), 1728631726, "yonatanBoris@gmail.com", "Haifa Neve Shanan Netiv Hen 12", 541782631, 3, "User", false);
+        Users user7 = new Users("Louis Litt", passwordEncrypt("Louis15"), 1237298379, "louisLitt@gmail.com", "Haifa Neve Shanan Netiv Hen 10", 576718722, 2, "User", false);
+        Users user8 = new Users("Yohanan Bloomfield", passwordEncrypt("Yohanan16"), 1213798179, "yohananBloomfield@gmail.com", "Haifa Neve Shanan Hanita 24", 542882281, 1, "Manager", false);
         session.save(user1);
         session.save(user2);
         session.save(user3);
@@ -201,7 +204,7 @@ public class SimpleServer extends AbstractServer {
 
     public static void handleNewUser(String fullName, int userID, String emailAddress, String password,
                                      String address, int phoneNumber, int groupID) {
-        Users newUser = new Users(fullName, passwordEncrypt(password), userID, emailAddress, address, phoneNumber, groupID, "User");
+        Users newUser = new Users(fullName, passwordEncrypt(password), userID, emailAddress, address, phoneNumber, groupID, "User", false);
         session.save(newUser);
         session.flush();
     }
@@ -231,8 +234,9 @@ public class SimpleServer extends AbstractServer {
             if (message.equals("get tasks")) {
                 client.sendToClient(getAll(Task.class));
             } else if (message.startsWith("modify")) {
-                String taskid = message.split(" ")[1];
-                modifyTask(Integer.parseInt(taskid), "TasksList");
+                String taskid = message.split(",")[1];
+                String volunteer = message.split(",")[2];
+                modifyTask(Integer.parseInt(taskid), "TasksList", volunteer);
                 client.sendToClient(getAll(Task.class));
             } else if (message.equals("add client")) {
                 SubscribedClient connection = new SubscribedClient(client);
@@ -282,26 +286,44 @@ public class SimpleServer extends AbstractServer {
                 }
             } else if (message.startsWith("LogIn")) {
                 String[] userData = message.split(",");
-                session = sessionFactory.openSession();
-                session.beginTransaction();
-                CriteriaBuilder builder = session.getCriteriaBuilder();
-                CriteriaQuery<Users> query = builder.createQuery(Users.class);
-                Root<Users> root = query.from(Users.class);
-                query.where(builder.equal(root.get("EmailAddress"), userData[1]));
-                List<Users> users = session.createQuery(query).getResultList();
-                if (!users.isEmpty()) {
-                    for (Users user1 : users) {
-                        if (user1.getPassword().equals(passwordEncrypt(userData[2]))) {
-                            client.sendToClient("LogIn," + user1.getFullName() + "," + user1.getUserID()
-                                    + "," + user1.getEmailAddress() + "," + user1.getPassword() + "," + user1.getHomeAddress()
-                                    + "," + user1.getPhoneNumber() + "," + user1.getGroupID() + "," + user1.getTitle());
-                            client.sendToClient(getAll(NotificationMessage.class));
-                        } else {
-                            client.sendToClient("WrongPassword");
+                try {
+                    session = sessionFactory.openSession();
+                    session.beginTransaction();
+                    CriteriaBuilder builder = session.getCriteriaBuilder();
+                    CriteriaQuery<Users> query = builder.createQuery(Users.class);
+                    Root<Users> root = query.from(Users.class);
+                    query.where(builder.equal(root.get("EmailAddress"), userData[1]));
+                    List<Users> users = session.createQuery(query).getResultList();
+                    if (!users.isEmpty()) {
+                        for (Users user1 : users) {
+                            System.out.println(session.isOpen());
+                            if (user1.getPassword().equals(passwordEncrypt(userData[2])) && !user1.isActive()) {
+                                user1.setActive(true);
+                                session.save(user1);
+                                session.flush();
+                                client.sendToClient("LogIn," + user1.getFullName() + "," + user1.getUserID()
+                                        + "," + user1.getEmailAddress() + "," + user1.getPassword() + "," + user1.getHomeAddress()
+                                        + "," + user1.getPhoneNumber() + "," + user1.getGroupID() + "," + user1.getTitle());
+                                System.out.println(session.isOpen());
+                                client.sendToClient(getAll(NotificationMessage.class));
+                                System.out.println(session.isOpen());
+                            } else {
+                                client.sendToClient("WrongPassword");
+                            }
                         }
+                    } else {
+                        client.sendToClient("Don't LogIn");
                     }
-                } else {
-                    client.sendToClient("Don't LogIn");
+                    session.getTransaction().commit();
+                } catch (Exception var5) {
+                    if (session != null && session.getTransaction().isActive()) {
+                        session.getTransaction().rollback();
+                    }
+                    var5.printStackTrace();
+                } finally {
+                    if (session != null) {
+                        session.close();
+                    }
                 }
             } else if (message.startsWith("HelpRequest")) {
                 String[] HelpRequest = message.split(",");
@@ -311,10 +333,10 @@ public class SimpleServer extends AbstractServer {
                 add(tempTask);
             } else if (message.startsWith("Task Accepted,")) {
                 String accept = message.split(",")[1];
-                modifyTask(Integer.parseInt(accept), "Authorized");
+                modifyTask(Integer.parseInt(accept), "Authorized", "");
             } else if (message.startsWith("Task Declined,")) {
                 String decline = message.split(",")[1];
-                modifyTask(Integer.parseInt(decline), "Unauthorized");
+                modifyTask(Integer.parseInt(decline), "Unauthorized", "");
             } else if (message.equals("get Reports")) {
                 client.sendToClient(getAll(Reports.class));
             } else if (message.equals("get users")) {
@@ -334,8 +356,6 @@ public class SimpleServer extends AbstractServer {
                     if (!users.isEmpty()) {
                         for (Users user1 : users) {
                             if (user1.getEmailAddress().equals(userData[1])) {
-                                System.out.println(userData[1]);
-                                System.out.println(userData[2]);
                                 user1.setPassword(passwordEncrypt(userData[2]));
                                 client.sendToClient("Changed");
                             }
@@ -356,9 +376,9 @@ public class SimpleServer extends AbstractServer {
                 }
             } else if (message.startsWith("Message")) {
                 String notification;
-                if(message.startsWith("Message Decline")){
+                if (message.startsWith("Message Decline")) {
                     notification = message.split(",")[3];
-                }else{
+                } else {
                     notification = "Task was accepted";
                 }
                 String sender = message.split(",")[1];
@@ -375,14 +395,49 @@ public class SimpleServer extends AbstractServer {
                 int groupID = Integer.parseInt(message.split(",")[2]);
                 String sender = message.split(",")[3];
                 List<Users> managerFind = getAll(Users.class);
-                for(Users user : managerFind){
-                    if(user.getGroupID()== groupID){
-                        NotificationMessage notif = new NotificationMessage(1, "Task"+taskID+ " was completed",
+                for (Users user : managerFind) {
+                    if (user.getGroupID() == groupID && user.getTitle().equals("Manager")) {
+                        NotificationMessage notif = new NotificationMessage(1, "Task" + taskID + " was completed",
                                 now, sender, user.getFullName());
                         add(notif);
                     }
                 }
-                modifyTask(Integer.parseInt(taskID), "Task Completed");
+                modifyTask(Integer.parseInt(taskID), "Task Completed", "");
+            } else if (message.startsWith("TaskNotCompleted")) {
+                System.out.println("working 3");
+                LocalDateTime now = LocalDateTime.now();
+                String taskID = message.split(",")[1];
+                String user = message.split(",")[2];
+                NotificationMessage notif = new NotificationMessage(1, "Required update on Task" + taskID,
+                        now, "Manager", user);
+                add(notif);
+                client.sendToClient(getAll(NotificationMessage.class));
+            } else if (message.startsWith("logOut")) {
+                int userID = Integer.parseInt(message.split(",")[1]);
+                try {
+                    session = sessionFactory.openSession();
+                    session.beginTransaction();
+                    CriteriaBuilder builder = session.getCriteriaBuilder();
+                    CriteriaQuery<Users> query = builder.createQuery(Users.class);
+                    Root<Users> root = query.from(Users.class);
+                    query.where(builder.equal(root.get("UserID"), userID));
+                    List<Users> users = session.createQuery(query).getResultList();
+                    if (!users.isEmpty()) {
+                        for (Users users1 : users) {
+                            users1.setActive(false);
+                        }
+                    }
+                    session.getTransaction().commit();
+                } catch (Exception var5) {
+                    if (session != null && session.getTransaction().isActive()) {
+                        session.getTransaction().rollback();
+                    }
+                    var5.printStackTrace();
+                } finally {
+                    if (session != null) {
+                        session.close();
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

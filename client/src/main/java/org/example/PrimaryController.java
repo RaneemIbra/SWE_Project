@@ -59,7 +59,8 @@ public class PrimaryController implements Initializable, ServerResponseCallback 
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
         for (NotificationMessage notif : notifList) {
-            if (notif.getReceiver().equals(currentUser.getFullName()) && !notif.getSender().equals(currentUser.getFullName())) {
+            if (notif.getReceiver().equals(currentUser.getFullName()) &&
+                    !notif.getSender().equals(currentUser.getFullName())) {
                 this.MessageList.getItems().addAll(notif.getMessage());
             }
         }
@@ -192,6 +193,7 @@ public class PrimaryController implements Initializable, ServerResponseCallback 
     @FXML
     void onLogOutClick(ActionEvent event) {
         try {
+            SimpleClient.getClient().sendToServer("logOut," + currentUser.getUserID());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
             AnchorPane PrimaryBane = loader.load();
             rootBane.getChildren().setAll(PrimaryBane);

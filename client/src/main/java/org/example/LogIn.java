@@ -81,7 +81,7 @@ public class LogIn implements Initializable, ServerResponseCallback {
                 String[] userData = response.split(",");
                 try {
                     PrimaryController.currentUser = new Users(userData[1], userData[4], Integer.parseInt(userData[2])
-                            , userData[3], userData[5], Integer.parseInt(userData[6]), Integer.parseInt(userData[7]), userData[8]);
+                            , userData[3], userData[5], Integer.parseInt(userData[6]), Integer.parseInt(userData[7]), userData[8], true);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("primary.fxml"));
                     AnchorPane PrimaryBane = loader.load();
                     rootBane.getChildren().setAll(PrimaryBane);
