@@ -6,12 +6,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -29,17 +32,38 @@ public class EmergencyReports implements Initializable {
 
     @FXML
     private Button homePageBTN;
-
+    @FXML
+    private ChoiceBox<String> Times;
+    String TimeSelection;
+    private final String[] Hours = {"1 hour ago", "5 hours ago", "24 hours ago", "All time"};
+    LocalDateTime Time1 = LocalDateTime.now().minusHours(1);
+    LocalDateTime Time5 = LocalDateTime.now().minusHours(5);
+    LocalDateTime Time24 = LocalDateTime.now().minusHours(24);
     public static List<Reports> reports = new ArrayList<>();
 
     public void initialize(URL arg0, ResourceBundle arg1) {
-        while (reports.isEmpty()) {
-            try {
-                Thread.currentThread().sleep(1);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        Times.getItems().addAll(Hours);
+        this.Times.setOnAction(event -> {
+            TimeSelection = this.Times.getSelectionModel().getSelectedItem();
+            this.EmergencyReports.getItems().clear();
+            for(Reports report : reports){
+                if(TimeSelection==null||TimeSelection.equals("All time")){
+                    this.EmergencyReports.getItems().add(report.getReportName());
+                }else if(TimeSelection.equals("1 hour ago")){
+                    if(report.getEmergencyTime().isAfter(Time1)){
+                        this.EmergencyReports.getItems().add(report.getReportName());
+                    }
+                }else if(TimeSelection.equals("5 hours ago")){
+                    if(report.getEmergencyTime().isAfter(Time5)){
+                        this.EmergencyReports.getItems().add(report.getReportName());
+                    }
+                }else{
+                    if(report.getEmergencyTime().isAfter(Time24)){
+                        this.EmergencyReports.getItems().add(report.getReportName());
+                    }
+                }
             }
-        }
+        });
         for(Reports report : reports){
             this.EmergencyReports.getItems().add(report.getReportName());
         }

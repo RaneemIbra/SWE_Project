@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,12 +13,9 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class TasksList implements Initializable {
+public class TasksList implements Initializable, ServerResponseCallback {
 
     @FXML
     private Label tasksLabel;
@@ -36,7 +34,31 @@ public class TasksList implements Initializable {
     private ListView<String> TasksList;
     public static List<Task> tasks = new ArrayList<>();
     private Task selectedTask = null;
+    private void scheduleTaskCheck() {
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                checkTaskStatus();
+            }
+        };
+        timer.schedule(timerTask, 10 * 1000);
+    }
 
+    private void checkTaskStatus() {
+        if (selectedTask != null && selectedTask.getState().equals("in progress")) {
+            sendTaskNotCompletedNotification(selectedTask);
+        }
+    }
+
+    private void sendTaskNotCompletedNotification(Task task) {
+        try {
+            SimpleClient.getClient().sendToServer("TaskNotCompleted," + task.getTaskID() + "," +
+                    PrimaryController.currentUser.getFullName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void initialize(URL arg0, ResourceBundle arg1) {
         for (Task task : tasks) {
             this.TasksList.getItems().addAll(task.getTaskName());
@@ -65,6 +87,20 @@ public class TasksList implements Initializable {
         });
     }
 
+    @Override
+    public void onResponse(String response) {
+        Platform.runLater(() -> {
+            if (response.startsWith("Ready")) {
+                for(Task task : tasks){
+                    if(selectedTask.getTaskID()==task.getTaskID()){
+                        selectedTask = task;
+                        scheduleTaskCheck();
+                    }
+                }
+            }
+        });
+    }
+
     private void showAlert(String task) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Task details");
@@ -74,7 +110,7 @@ public class TasksList implements Initializable {
     }
 
     @FXML
-    void onPickTask(ActionEvent event) throws IOException {
+    void onPickTask(ActionEvent event){
         Alert alert1 = new Alert((Alert.AlertType.CONFIRMATION));
         Alert alert2 = new Alert((Alert.AlertType.INFORMATION));
         alert1.setTitle("Task Volunteering");
@@ -85,7 +121,9 @@ public class TasksList implements Initializable {
         alert1.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK && selectedTask.getState().equals("Pending")) {
                 try {
-                    SimpleClient.getClient().sendToServer("modify " + selectedTask.getTaskID());
+                    SimpleClient.getClient().setCallback(this);
+                    SimpleClient.getClient().sendToServer("modify," + selectedTask.getTaskID()
+                            +","+ PrimaryController.currentUser.getFullName());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -96,6 +134,7 @@ public class TasksList implements Initializable {
                 alert2.showAndWait();
             }
         });
+
     }
 
     @FXML
