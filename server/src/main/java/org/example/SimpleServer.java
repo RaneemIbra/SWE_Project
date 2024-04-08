@@ -87,6 +87,22 @@ public class SimpleServer extends AbstractServer {
         return null;
     }
 
+    private static <T> List<T> getSpecific(Class<T> object, String specific, String data) {
+        //Session session1;
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<T> query = builder.createQuery(object);
+            Root<T> root = query.from(object);
+            query.where(builder.equal(root.get(specific), data));
+            return session.createQuery(query).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static void modifyTask(int TaskID, String msg, String name) {
         try {
             session = sessionFactory.openSession();
@@ -258,20 +274,14 @@ public class SimpleServer extends AbstractServer {
             } else if (message.startsWith("Register")) {
                 String[] userData = message.split(",");
                 try {
-                    session = sessionFactory.openSession();
-                    session.beginTransaction();
-                    CriteriaBuilder builder = session.getCriteriaBuilder();
-                    CriteriaQuery<Users> query = builder.createQuery(Users.class);
-                    Root<Users> root = query.from(Users.class);
-                    query.where(builder.equal(root.get("EmailAddress"), userData[3]));
-                    List<Users> users = session.createQuery(query).getResultList();
+                    List<Users> users = getSpecific(Users.class, "EmailAddress", userData[3]);
                     if (!users.isEmpty()) {
                         client.sendToClient("exists");
                     } else {
                         handleNewUser(userData[1], Integer.parseInt(userData[2]), userData[3], userData[4]
                                 , userData[5], Integer.parseInt(userData[6]), Integer.parseInt(userData[7]));
                         client.sendToClient("doesn't exist");
-                        System.out.println("Registered successfuly");
+                        System.out.println("Registered successfully");
                     }
                     session.getTransaction().commit();
                 } catch (Exception var5) {
@@ -287,13 +297,7 @@ public class SimpleServer extends AbstractServer {
             } else if (message.startsWith("LogIn")) {
                 String[] userData = message.split(",");
                 try {
-                    session = sessionFactory.openSession();
-                    session.beginTransaction();
-                    CriteriaBuilder builder = session.getCriteriaBuilder();
-                    CriteriaQuery<Users> query = builder.createQuery(Users.class);
-                    Root<Users> root = query.from(Users.class);
-                    query.where(builder.equal(root.get("EmailAddress"), userData[1]));
-                    List<Users> users = session.createQuery(query).getResultList();
+                    List<Users> users = getSpecific(Users.class, "EmailAddress", userData[1]);
                     if (!users.isEmpty()) {
                         for (Users user1 : users) {
                             System.out.println(session.isOpen());
@@ -307,7 +311,9 @@ public class SimpleServer extends AbstractServer {
                                 System.out.println(session.isOpen());
                                 client.sendToClient(getAll(NotificationMessage.class));
                                 System.out.println(session.isOpen());
-                            } else {
+                            }else if(user1.isActive()){
+                                client.sendToClient("AccountIsActive");
+                            }else {
                                 client.sendToClient("WrongPassword");
                             }
                         }
@@ -346,13 +352,7 @@ public class SimpleServer extends AbstractServer {
             } else if (message.startsWith("Change")) {
                 String[] userData = message.split(",");
                 try {
-                    session = sessionFactory.openSession();
-                    session.beginTransaction();
-                    CriteriaBuilder builder = session.getCriteriaBuilder();
-                    CriteriaQuery<Users> query = builder.createQuery(Users.class);
-                    Root<Users> root = query.from(Users.class);
-                    query.where(builder.equal(root.get("EmailAddress"), userData[1]));
-                    List<Users> users = session.createQuery(query).getResultList();
+                    List<Users> users = getSpecific(Users.class, "EmailAddress", userData[1]);
                     if (!users.isEmpty()) {
                         for (Users user1 : users) {
                             if (user1.getEmailAddress().equals(userData[1])) {
