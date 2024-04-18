@@ -95,5 +95,10 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
+      <Label fx:id="activeAccount" layoutX="578.0" layoutY="233.0" prefHeight="30.0" prefWidth="145.0" text="Account is active" textFill="RED">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

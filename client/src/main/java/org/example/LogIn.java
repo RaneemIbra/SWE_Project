@@ -42,6 +42,8 @@ public class LogIn implements Initializable, ServerResponseCallback {
     @FXML
     private PasswordField PasswordTF;
     @FXML
+    private Label activeAccount;
+    @FXML
     private Hyperlink RegisterLink;
 
     boolean account, password;
@@ -60,6 +62,7 @@ public class LogIn implements Initializable, ServerResponseCallback {
     public void initialize(URL arg0, ResourceBundle arg1) {
         invalidEmail.setVisible(false);
         invalidPassword.setVisible(false);
+        activeAccount.setVisible(false);
         user = new Users();
     }
 
@@ -69,6 +72,8 @@ public class LogIn implements Initializable, ServerResponseCallback {
             invalidEmail.setVisible(true);
         } else if (response.equals("WrongPassword")) {
             invalidPassword.setVisible(true);
+        }else if(response.equals("AccountIsActive")){
+            activeAccount.setVisible(true);
         }
         Platform.runLater(() -> {
             if (response.startsWith("Emergency")) {

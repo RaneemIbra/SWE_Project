@@ -76,7 +76,7 @@ public class SimpleClient extends AbstractClient {
             callback.onResponse("Ready");
         } else if (msg.toString().equals("exists") || msg.toString().equals("doesn't exist")
                 || msg.toString().startsWith("LogIn") || msg.toString().equals("Don't LogIn")
-                || msg.toString().equals("WrongPassword")|| msg.equals("Changed")) {
+                || msg.toString().equals("WrongPassword")|| msg.equals("Changed") || msg.equals("AccountIsActive")) {
             if (callback != null) {
                 callback.onResponse(msg.toString());
             }

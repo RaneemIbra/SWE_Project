@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 public class Users implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int UserID;   //the set id should be sufficient, no need for generated id
     String FullName;
     String Password;
