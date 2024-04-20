@@ -34,6 +34,7 @@ public class TasksList implements Initializable, ServerResponseCallback {
     private ListView<String> TasksList;
     public static List<Task> tasks = new ArrayList<>();
     private Task selectedTask = null;
+
     private void scheduleTaskCheck() {
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -42,7 +43,7 @@ public class TasksList implements Initializable, ServerResponseCallback {
                 checkTaskStatus();
             }
         };
-        timer.schedule(timerTask, 10 * 1000);
+        timer.schedule(timerTask, 6 * 10 * 1000);
     }
 
     private void checkTaskStatus() {
@@ -59,9 +60,12 @@ public class TasksList implements Initializable, ServerResponseCallback {
             e.printStackTrace();
         }
     }
+
     public void initialize(URL arg0, ResourceBundle arg1) {
         for (Task task : tasks) {
-            this.TasksList.getItems().addAll(task.getTaskName());
+            if(task.getUserGroupId()==PrimaryController.currentUser.getGroupID()){
+                this.TasksList.getItems().addAll(task.getTaskName());
+            }
         }
         this.TasksList.setOnMouseClicked(event -> {
             String selectedTaskName = this.TasksList.getSelectionModel().getSelectedItem();
@@ -91,8 +95,8 @@ public class TasksList implements Initializable, ServerResponseCallback {
     public void onResponse(String response) {
         Platform.runLater(() -> {
             if (response.startsWith("Ready")) {
-                for(Task task : tasks){
-                    if(selectedTask.getTaskID()==task.getTaskID()){
+                for (Task task : tasks) {
+                    if (selectedTask.getTaskID() == task.getTaskID()) {
                         selectedTask = task;
                         scheduleTaskCheck();
                     }
@@ -110,7 +114,7 @@ public class TasksList implements Initializable, ServerResponseCallback {
     }
 
     @FXML
-    void onPickTask(ActionEvent event){
+    void onPickTask(ActionEvent event) {
         Alert alert1 = new Alert((Alert.AlertType.CONFIRMATION));
         Alert alert2 = new Alert((Alert.AlertType.INFORMATION));
         alert1.setTitle("Task Volunteering");
@@ -123,7 +127,7 @@ public class TasksList implements Initializable, ServerResponseCallback {
                 try {
                     SimpleClient.getClient().setCallback(this);
                     SimpleClient.getClient().sendToServer("modify," + selectedTask.getTaskID()
-                            +","+ PrimaryController.currentUser.getFullName());
+                            + "," + PrimaryController.currentUser.getFullName());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

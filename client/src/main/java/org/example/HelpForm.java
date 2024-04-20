@@ -106,7 +106,7 @@ public class HelpForm implements Initializable {
                     try {
                         SimpleClient.getClient().sendToServer("HelpRequest," + HelpReqListSelection + "," +
                                 HelpReqTFValue + "," + date + "," + PrimaryController.currentUser.getFullName()
-                                + "," + PrimaryController.currentUser.getUserID() + "," + TaskNameTFValue);
+                                + "," + PrimaryController.currentUser.getUserID() + "," + TaskNameTFValue + "," + PrimaryController.currentUser.getGroupID());
                         alert2.show();
                         onHomePageClick(event);
                     } catch (IOException e) {

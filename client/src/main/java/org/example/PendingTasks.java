@@ -45,7 +45,9 @@ public class PendingTasks implements Initializable {
     Task task;
     public void initialize(URL arg0, ResourceBundle arg1) {
         for (Task taskIt : tasks) {
-            this.PendingTasks.getItems().addAll(taskIt.getTaskName());
+            if(taskIt.getUserGroupId()==PrimaryController.currentUser.getGroupID()){
+                this.PendingTasks.getItems().addAll(taskIt.getTaskName());
+            }
         }
         this.PendingTasks.setOnMouseClicked(event -> {
             S1 = this.PendingTasks.getSelectionModel().getSelectedItem();
