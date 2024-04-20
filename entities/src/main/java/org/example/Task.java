@@ -19,8 +19,9 @@ public class Task implements Serializable {
     String Volunteer;
     String Authorized;
     String DueDate;
+    int UserGroupId;
     public Task(int taskID, String taskName, String taskDescription, String userName, int userID,
-                String state, LocalDateTime submissionTime, String volunteer, String authorized, String dueDate) {
+                String state, LocalDateTime submissionTime, String volunteer, String authorized, String dueDate, int userGroupId) {
         TaskID = taskID;
         TaskName = taskName;
         TaskDescription = taskDescription;
@@ -31,10 +32,27 @@ public class Task implements Serializable {
         Volunteer = volunteer;
         Authorized = authorized;
         DueDate = dueDate;
+        UserGroupId = userGroupId;
     }
 
     public Task() {
 
+    }
+
+    public String getDueDate() {
+        return DueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        DueDate = dueDate;
+    }
+
+    public int getUserGroupId() {
+        return UserGroupId;
+    }
+
+    public void setUserGroupId(int userGroupId) {
+        UserGroupId = userGroupId;
     }
 
     public String getAuthorized() {
@@ -112,7 +130,7 @@ public class Task implements Serializable {
     @Override
     public String toString() {
         return String.format("Task ID: %d\nTask Description: %s\nUser Name: %s\nUser ID: " +
-                "%d\nState: %s\nVolunteer: %s\nSubmission Time: %s\nDue Date: %s",
-                TaskID, TaskDescription, UserName, UserID, State, Volunteer, SubmissionTime, DueDate);
+                "%d\nState: %s\nVolunteer: %s\nSubmission Time: %s\nDue Date: %s\nGroup: %d",
+                TaskID, TaskDescription, UserName, UserID, State, Volunteer, SubmissionTime, DueDate, UserGroupId);
     }
 }

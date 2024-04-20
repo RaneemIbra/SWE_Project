@@ -174,16 +174,17 @@ public class SimpleServer extends AbstractServer {
     public static void generateTasksTable() {
         LocalDateTime now = LocalDateTime.now();
         String dueDate = now.toString();
-        Task task1 = new Task(1829371289, "Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none", "Authorized", dueDate);
-        Task task2 = new Task(1829371284, "Task2", "Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate);
-        Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate);
-        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "in progress", now, "Eden Daddo", "Authorized", dueDate);
-        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "in progress", now, "Eden Daddo", "Authorized", dueDate);
-        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate);
-        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate);
-        Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate);
-        Task task9 = new Task(1829371285, "Task9", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate);
-        Task task10 = new Task(1829371285, "Task10", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate);
+        Task task1 = new Task(1829371289, "Task1", "Walk the pets", "Eden Daddo", 2128219878, "Pending", now, "none", "Authorized", dueDate,1);
+        Task task2 = new Task(1829371284, "Task2", "Buy medical equipment", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate,2);
+        Task task3 = new Task(1829371288, "Task3", "Help buy groceries", "Leen Yakov", 1823718982, "Pending", now, "none", "Authorized", dueDate,2);
+        Task task4 = new Task(1829371287, "Task4", "Clean the house", "Karen Yakov", 2127726318, "in progress", now, "Eden Daddo", "Authorized", dueDate,2);
+        Task task5 = new Task(1829371286, "Task5", "Take care of the children", "Karen Yakov", 2127726318, "in progress", now, "Eden Daddo", "Authorized", dueDate,2);
+        Task task6 = new Task(1829371285, "Task6", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate,1);
+        Task task7 = new Task(1829371285, "Task7", "Give a ride", "Rami Benet", 2138291782, "Pending", now, "none", "Authorized", dueDate,1);
+        Task task8 = new Task(1829371285, "Task8", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate,1);
+        Task task9 = new Task(1829371285, "Task9", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate,1);
+        Task task10 = new Task(1829371285, "Task10", "Give a ride", "Eden Daddo", 2128219878, "Pending", now, "none", "Unauthorized", dueDate,1);
+        Task task11 = new Task(1829371284, "Task11", "Give a ride", "Leen Yakov", 1823718982, "Pending", now, "none", "Unauthorized", dueDate,2);
 
         session.save(task1);
         session.save(task2);
@@ -195,12 +196,13 @@ public class SimpleServer extends AbstractServer {
         session.save(task8);
         session.save(task9);
         session.save(task10);
+        session.save(task11);
         session.flush();
     }
 
     public static void generateUsersTable() {
         Users user1 = new Users("Eden Daddo", passwordEncrypt("Eden11"), 2128219878, "edenDado@gmail.com", "Haifa Remot Remez Haviva Reich 54", 547823641, 1, "User", false);
-        Users user2 = new Users("Karen Yakov", passwordEncrypt("Karen11"), 2127726318, "karenYakov@gmail.com", "Haifa Remot Alon Dovnov 18", 547374388, 2, "User", false);
+        Users user2 = new Users("Karen Yakov", passwordEncrypt("Karen11"), 2127726318, "karenYakov@gmail.com", "Haifa Remot Alon Dovnov 18", 547374388, 2, "Manager", false);
         Users user3 = new Users("Leen Yakov", passwordEncrypt("Leen12"), 1823718982, "leenYakov@gmail.com", "Haifa Remot Alon Dovnov 16", 518723618, 2, "User", false);
         Users user4 = new Users("Rami Benet", passwordEncrypt("Rami11"), 2138291782, "ramiBenet@gmail.com", "Haifa Remot Remez Haviva Reich 60", 534289782, 1, "User", false);
         Users user5 = new Users("Abo Majd", passwordEncrypt("Majd5"), 1212323982, "aboMajd@gmail.com", "Haifa Remot Remez Haviva Reich 40", 541271872, 3, "User", false);
@@ -335,7 +337,7 @@ public class SimpleServer extends AbstractServer {
                 String[] HelpRequest = message.split(",");
                 LocalDateTime now = LocalDateTime.now();
                 Task tempTask = new Task(1, HelpRequest[6], HelpRequest[1] + " " + HelpRequest[2], HelpRequest[4]
-                        , Integer.parseInt(HelpRequest[5]), "Pending", now, "none", "Unauthorized", HelpRequest[3]);
+                        , Integer.parseInt(HelpRequest[5]), "Pending", now, "none", "Unauthorized", HelpRequest[3], Integer.parseInt(HelpRequest[7]));
                 add(tempTask);
             } else if (message.startsWith("Task Accepted,")) {
                 String accept = message.split(",")[1];
