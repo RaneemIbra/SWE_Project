@@ -123,7 +123,8 @@ public class TasksList implements Initializable, ServerResponseCallback {
         alert2.setTitle("Task Volunteering");
         alert2.setHeaderText(selectedTask.getTaskName());
         alert1.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK && selectedTask.getState().equals("Pending")) {
+            if (response == ButtonType.OK && selectedTask.getState().equals("Pending")
+                    && selectedTask.getUserID()!=PrimaryController.currentUser.getUserID()) {
                 try {
                     SimpleClient.getClient().setCallback(this);
                     SimpleClient.getClient().sendToServer("modify," + selectedTask.getTaskID()
@@ -132,6 +133,10 @@ public class TasksList implements Initializable, ServerResponseCallback {
                     throw new RuntimeException(e);
                 }
                 alert2.setContentText(selectedTask.getTaskName() + " was picked");
+                alert2.showAndWait();
+            } else if (response ==ButtonType.OK && selectedTask.getState().equals("Pending")
+                    && selectedTask.getUserID()==PrimaryController.currentUser.getUserID()) {
+                alert2.setContentText(selectedTask.getTaskName() + " is your task, and you can't volunteer for it");
                 alert2.showAndWait();
             } else if (response == ButtonType.OK && selectedTask.getState().equals("in progress")) {
                 alert2.setContentText(selectedTask.getTaskName() + " is already in progress");
