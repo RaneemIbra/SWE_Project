@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,10 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PendingTasks implements Initializable {
+    public static PendingTasks instance;
+    public PendingTasks(){
+        instance = this;
+    }
 
     @FXML
     private Button AcceptTaskBTN;
@@ -43,12 +48,21 @@ public class PendingTasks implements Initializable {
     public String S1;
 
     Task task;
-    public void initialize(URL arg0, ResourceBundle arg1) {
-        for (Task taskIt : tasks) {
-            if(taskIt.getUserGroupId()==PrimaryController.currentUser.getGroupID()){
-                this.PendingTasks.getItems().addAll(taskIt.getTaskName());
+
+    public void initList(){
+        Platform.runLater(() -> {
+            if(this.PendingTasks!=null){
+                this.PendingTasks.getItems().clear();
+                for (Task taskIt : tasks) {
+                    if(taskIt.getUserGroupId()==PrimaryController.currentUser.getGroupID()){
+                        this.PendingTasks.getItems().addAll(taskIt.getTaskName());
+                    }
+                }
             }
-        }
+        });
+    }
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        initList();
         this.PendingTasks.setOnMouseClicked(event -> {
             S1 = this.PendingTasks.getSelectionModel().getSelectedItem();
             if(S1!=null){

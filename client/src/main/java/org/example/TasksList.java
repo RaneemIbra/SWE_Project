@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class TasksList implements Initializable, ServerResponseCallback {
+    public static TasksList instance;
+    public TasksList(){
+        instance = this;
+    }
 
     @FXML
     private Label tasksLabel;
@@ -61,12 +65,20 @@ public class TasksList implements Initializable, ServerResponseCallback {
         }
     }
 
-    public void initialize(URL arg0, ResourceBundle arg1) {
-        for (Task task : tasks) {
-            if(task.getUserGroupId()==PrimaryController.currentUser.getGroupID()){
-                this.TasksList.getItems().addAll(task.getTaskName());
+    public void initList(){
+        Platform.runLater(() -> {
+            if(this.TasksList!=null){
+                TasksList.getItems().clear();
+                for (Task task : tasks) {
+                    if(task.getUserGroupId()==PrimaryController.currentUser.getGroupID()){
+                        this.TasksList.getItems().addAll(task.getTaskName());
+                    }
+                }
             }
-        }
+        });
+    }
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        initList();
         this.TasksList.setOnMouseClicked(event -> {
             String selectedTaskName = this.TasksList.getSelectionModel().getSelectedItem();
             if (selectedTaskName != null) {

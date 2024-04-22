@@ -20,6 +20,10 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class UsersList implements Initializable, ServerResponseCallback {
+    public static UsersList instance;
+    public UsersList(){
+        instance = this;
+    }
 
     @FXML
     private Button EmergencyBTN;
@@ -45,7 +49,21 @@ public class UsersList implements Initializable, ServerResponseCallback {
     public static List<Users> users;
     boolean usersTaskJumper = false;
     Users user;
+
+    public void initList(){
+        Platform.runLater(() -> {
+            if(UsersViewList!=null){
+                UsersViewList.getItems().clear();
+                for(Users user1 : users){
+                    if(user1.getGroupID()== PrimaryController.currentUser.getGroupID()){
+                        this.UsersViewList.getItems().add(user1.getFullName());
+                    }
+                }
+            }
+        });
+    }
     public void initialize(URL arg0, ResourceBundle arg1) {
+        initList();
         for(Users user1 : users){
             if(user1.getGroupID()== PrimaryController.currentUser.getGroupID()){
                 this.UsersViewList.getItems().add(user1.getFullName());

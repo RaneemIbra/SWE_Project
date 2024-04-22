@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,11 @@ import java.util.ResourceBundle;
 
 public class EmergencyReports implements Initializable {
 
+    public static EmergencyReports instance;
+    public EmergencyReports(){
+        instance=this;
+    }
+
     @FXML
     public AnchorPane rootBane;
 
@@ -40,6 +46,19 @@ public class EmergencyReports implements Initializable {
     LocalDateTime Time5 = LocalDateTime.now().minusHours(5);
     LocalDateTime Time24 = LocalDateTime.now().minusHours(24);
     public static List<Reports> reports = new ArrayList<>();
+
+    public void initList(){
+        Platform.runLater(() -> {
+            if(this.EmergencyReports!=null){
+                if (!EmergencyReports.getItems().isEmpty()) {
+                    EmergencyReports.getItems().clear();
+                }
+                for (Reports reports1 : reports) {
+                    this.EmergencyReports.getItems().addAll(reports1.getReportName());
+                }
+            }
+        });
+    }
 
     public void initialize(URL arg0, ResourceBundle arg1) {
         Times.getItems().addAll(Hours);
@@ -64,9 +83,7 @@ public class EmergencyReports implements Initializable {
                 }
             }
         });
-        for(Reports report : reports){
-            this.EmergencyReports.getItems().add(report.getReportName());
-        }
+        initList();
         this.EmergencyReports.setOnMouseClicked(event -> {
             String selectedReportName = this.EmergencyReports.getSelectionModel().getSelectedItem();
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
