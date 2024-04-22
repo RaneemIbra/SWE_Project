@@ -72,10 +72,10 @@ public class App extends Application {
         });
     }
 
-    public void EmergencyClick(String name, int reportID, int userID, String fullName, String location) {
+    public void EmergencyClick(String name, int reportID, int userID, String fullName, String location, int groupID) {
         try {
             SimpleClient.getClient().sendToServer("Emergency," + name + "," + reportID + "," + userID
-            + "," + fullName + "," + location);
+            + "," + fullName + "," + location + "," + groupID);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

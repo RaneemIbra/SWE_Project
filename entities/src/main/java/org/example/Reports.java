@@ -17,14 +17,17 @@ public class Reports implements Serializable {
     String FullName;
     LocalDateTime EmergencyTime;
     String Location;
+    int GrouId;
 
-    public Reports(String reportName, int reportID, int userID, String fullName, LocalDateTime emergencyTime, String location) {
+    public Reports(String reportName, int reportID, int userID,
+                   String fullName, LocalDateTime emergencyTime, String location, int grouId) {
         ReportID = reportID;
         UserID = userID;
         FullName = fullName;
         EmergencyTime = emergencyTime;
         Location = location;
         ReportName = reportName;
+        GrouId = grouId;
     }
 
     public Reports() {
@@ -34,6 +37,7 @@ public class Reports implements Serializable {
         FullName = "";
         EmergencyTime = null;
         Location = "";
+        GrouId = 0;
     }
 
     public String getReportName() {
@@ -82,6 +86,14 @@ public class Reports implements Serializable {
 
     public void setLocation(String location) {
         Location = location;
+    }
+
+    public int getGrouId() {
+        return GrouId;
+    }
+
+    public void setGrouId(int grouId) {
+        GrouId = grouId;
     }
 
     @Override

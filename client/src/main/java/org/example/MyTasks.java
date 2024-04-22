@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -18,6 +19,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class MyTasks implements Initializable {
+    public static MyTasks instance;
+    public MyTasks(){
+        instance = this;
+    }
 
     @FXML
     private Button EmergencyBTN;
@@ -44,32 +49,45 @@ public class MyTasks implements Initializable {
     public static List<Task> tasks = new ArrayList<>();
     String S1;
     Task task;
+
+    public void initList(){
+        Platform.runLater(() -> {
+            if(this.helpRequestsList!=null && this.volunteeringList!=null){
+                this.volunteeringList.getItems().clear();
+                this.helpRequestsList.getItems().clear();
+                for (Task task : tasks) {
+                    if (PrimaryController.viewUser != null) {
+                        if (task.getUserName().equals(PrimaryController.viewUser.getFullName())) {
+                            this.helpRequestsList.getItems().addAll(task.getTaskName());
+                        }
+                        if (task.getVolunteer().equals(PrimaryController.viewUser.getFullName())) {
+                            this.volunteeringList.getItems().addAll(task.getTaskName());
+                        }
+                    } else {
+                        if (task.getUserName().equals(PrimaryController.currentUser.getFullName())) {
+                            this.helpRequestsList.getItems().addAll(task.getTaskName());
+                        }
+                        if (task.getVolunteer().equals(PrimaryController.currentUser.getFullName())) {
+                            this.volunteeringList.getItems().addAll(task.getTaskName());
+                        }
+                    }
+                }
+            }
+        });
+    }
     public void initialize(URL arg0, ResourceBundle arg1) {
         if(PrimaryController.viewUser !=null){
             homePageBTN.setVisible(false);
+            ShowTaskBTN.setVisible(false);
+            TaskDone.setVisible(false);
             UsersListBTN.setVisible(true);
         }else{
             homePageBTN.setVisible(true);
+            ShowTaskBTN.setVisible(true);
+            TaskDone.setVisible(true);
             UsersListBTN.setVisible(false);
         }
-        for (Task task : tasks) {
-            if (PrimaryController.viewUser != null) {
-                if (task.getUserName().equals(PrimaryController.viewUser.getFullName())) {
-                    this.helpRequestsList.getItems().addAll(task.getTaskName());
-                }
-                if (task.getVolunteer().equals(PrimaryController.viewUser.getFullName())) {
-                    this.volunteeringList.getItems().addAll(task.getTaskName());
-                }
-            } else {
-                if (task.getUserName().equals(PrimaryController.currentUser.getFullName())) {
-                    this.helpRequestsList.getItems().addAll(task.getTaskName());
-                }
-                if (task.getVolunteer().equals(PrimaryController.currentUser.getFullName())) {
-                    this.volunteeringList.getItems().addAll(task.getTaskName());
-                }
-            }
-        }
-
+        initList();
         this.helpRequestsList.setOnMouseClicked(event -> {
             S1 = this.helpRequestsList.getSelectionModel().getSelectedItem();
             for (Task task1 : tasks) {

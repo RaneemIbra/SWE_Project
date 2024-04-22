@@ -53,7 +53,7 @@ public class HelpForm implements Initializable {
 
     String TaskNameTFValue;
     String HelpReqListSelection;
-    String HelpReqTFValue;
+    String HelpReqTFValue="";
     LocalDate date;
     private final String[] help = {"Walk The Dog", "Buy Groceries", "Help Clean The House",
             "Buy Medications", "Give A Ride", "Maw the Lawn", "Other..."};

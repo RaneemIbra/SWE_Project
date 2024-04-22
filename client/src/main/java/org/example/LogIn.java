@@ -200,6 +200,7 @@ public class LogIn implements Initializable, ServerResponseCallback {
             }
         });
         App appInstance = App.getInstance();
-        appInstance.EmergencyClick("new report", 1, IDNum.get(), FullName.get(), location);
+        appInstance.EmergencyClick("report" + ++PrimaryController.reportCounter,
+                PrimaryController.reportCounter, IDNum.get(), FullName.get(), location,0);
     }
 }

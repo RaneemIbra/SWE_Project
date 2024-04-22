@@ -28,7 +28,8 @@ public class SimpleServer extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
     private static Session session;
     private static SessionFactory sessionFactory = getSessionFactory();
-
+    private static int taskCounter = 12;
+    private static int messageCounter = 6;
     public SimpleServer(int port) {
         super(port);
         try {
@@ -137,14 +138,14 @@ public class SimpleServer extends AbstractServer {
 
     public static void generateReportsTable() {
         LocalDateTime now = LocalDateTime.now();
-        Reports report1 = new Reports("report1", 1231232, 2128219878, "Eden Daddo", now, "blackburn");
-        Reports report2 = new Reports("report2", 1231232, 2128219878, "Eden Daddo", now, "blackburn");
-        Reports report3 = new Reports("report3", 1231232, 2128219878, "Leen Yakov", now, "london");
-        Reports report4 = new Reports("report4", 1231232, 2128219878, "Eden Daddo", now, "blackburn");
-        Reports report5 = new Reports("report5", 1231232, 2128219878, "Rami Benet", now, "liverpool");
-        Reports report6 = new Reports("report6", 1231232, 2128219878, "Rami Benet", now, "liverpool");
-        Reports report7 = new Reports("report7", 1231232, 2128219878, "Rami Benet", now, "liverpool");
-        Reports report8 = new Reports("report8", 1231232, 2128219878, "Karen Yakov", now.minusHours(3), "london");
+        Reports report1 = new Reports("report1", 1231232, 2128219878, "Eden Daddo", now, "blackburn",1);
+        Reports report2 = new Reports("report2", 1231232, 2128219878, "Eden Daddo", now, "blackburn",1);
+        Reports report3 = new Reports("report3", 1231232, 2128219878, "Leen Yakov", now, "london",2);
+        Reports report4 = new Reports("report4", 1231232, 2128219878, "Eden Daddo", now, "blackburn",1);
+        Reports report5 = new Reports("report5", 1231232, 2128219878, "Rami Benet", now, "liverpool",1);
+        Reports report6 = new Reports("report6", 1231232, 2128219878, "Rami Benet", now, "liverpool",1);
+        Reports report7 = new Reports("report7", 1231232, 2128219878, "Rami Benet", now, "liverpool",1);
+        Reports report8 = new Reports("report8", 1231232, 2128219878, "Karen Yakov", now.minusHours(3), "london",2);
         session.save(report1);
         session.save(report2);
         session.save(report3);
@@ -265,13 +266,22 @@ public class SimpleServer extends AbstractServer {
                 String[] temp = message.split(",");
                 LocalDateTime now = LocalDateTime.now();
                 Reports report = new Reports(temp[1], Integer.parseInt(temp[2]),
-                        Integer.parseInt(temp[3]), temp[4], now, temp[5]);
-                NotificationMessage newMessage = new NotificationMessage(1, report.getReportName(),
+                        Integer.parseInt(temp[3]), temp[4], now, temp[5], Integer.parseInt(temp[6]));
+                NotificationMessage newMessage = new NotificationMessage(messageCounter++, report.getReportName(),
                         now, report.getFullName(), "HelpCenter");
                 add(report);
                 add(newMessage);
                 System.out.println("We have an emergency. Details: ");
                 System.out.println(report);
+                Users manager = null;
+                List<Users> managerFind = getAll(Users.class);
+                for(Users user1 : managerFind){
+                    if((Integer.parseInt(temp[6])== user1.getGroupID() && user1.getTitle().equals("Manager"))
+                    ||(Integer.parseInt(temp[6])==0&&user1.getTitle().equals("Manager"))){
+                        manager=user1;
+                    }
+                }
+                sendMessageToClient(manager.getFullName(),Reports.class);
                 client.sendToClient("Emergency call was received\nHelp is on the way\nEmergency Details:\n" + report);
             } else if (message.startsWith("Register")) {
                 String[] userData = message.split(",");
@@ -296,6 +306,14 @@ public class SimpleServer extends AbstractServer {
                         session.close();
                     }
                 }
+                Users manager = null;
+                List<Users> managerFind = getAll(Users.class);
+                for(Users user1 : managerFind){
+                    if(Integer.parseInt(userData[7])== user1.getGroupID() && user1.getTitle().equals("Manager")){
+                        manager=user1;
+                    }
+                }
+                sendMessageToClient(manager.getFullName(),Users.class);
             } else if (message.startsWith("LogIn")) {
                 String[] userData = message.split(",");
                 try {
@@ -313,6 +331,16 @@ public class SimpleServer extends AbstractServer {
                                 System.out.println(session.isOpen());
                                 client.sendToClient(getAll(NotificationMessage.class));
                                 System.out.println(session.isOpen());
+                                client.setInfo("User", user1);
+                                boolean flag1 = false;
+                                for(SubscribedClient client1 : SubscribersList){
+                                    if(client1.getClient() == client){
+                                        flag1 = true;
+                                    }
+                                }
+                                if(!flag1){
+                                    SubscribersList.add(new SubscribedClient(client));
+                                }
                             }else if(user1.isActive()){
                                 client.sendToClient("AccountIsActive");
                             }else {
@@ -336,12 +364,27 @@ public class SimpleServer extends AbstractServer {
             } else if (message.startsWith("HelpRequest")) {
                 String[] HelpRequest = message.split(",");
                 LocalDateTime now = LocalDateTime.now();
-                Task tempTask = new Task(1, HelpRequest[6], HelpRequest[1] + " " + HelpRequest[2], HelpRequest[4]
+                Task tempTask = new Task(taskCounter++, HelpRequest[6] + taskCounter, HelpRequest[1] + " " + HelpRequest[2], HelpRequest[4]
                         , Integer.parseInt(HelpRequest[5]), "Pending", now, "none", "Unauthorized", HelpRequest[3], Integer.parseInt(HelpRequest[7]));
                 add(tempTask);
+                List<Users> managerFind = getAll(Users.class);
+                String receiver = "";
+                for (Users user : managerFind) {
+                    if (user.getGroupID() == Integer.parseInt(HelpRequest[7]) && user.getTitle().equals("Manager")) {
+                        receiver = user.getFullName();
+                    }
+                }
+                System.out.println("pre");
+                sendMessageToClient(receiver, Task.class);
+                System.out.println("in");
+                client.sendToClient(getAll(Task.class));
+                System.out.println("post");
             } else if (message.startsWith("Task Accepted,")) {
                 String accept = message.split(",")[1];
                 modifyTask(Integer.parseInt(accept), "Authorized", "");
+                for(SubscribedClient client1 : SubscribersList){
+                    client1.getClient().sendToClient(getAll(Task.class));
+                }
             } else if (message.startsWith("Task Declined,")) {
                 String decline = message.split(",")[1];
                 modifyTask(Integer.parseInt(decline), "Unauthorized", "");
@@ -385,11 +428,10 @@ public class SimpleServer extends AbstractServer {
                 }
                 String sender = message.split(",")[1];
                 String receiver = message.split(",")[2];
-                System.out.println(sender);
-                System.out.println(receiver);
                 LocalDateTime now = LocalDateTime.now();
-                NotificationMessage notif = new NotificationMessage(1, notification, now, sender, receiver);
+                NotificationMessage notif = new NotificationMessage(messageCounter++, notification, now, sender, receiver);
                 add(notif);
+                sendMessageToClient(receiver, NotificationMessage.class);
                 client.sendToClient(getAll(NotificationMessage.class));
             } else if (message.startsWith("Task Completed")) {
                 LocalDateTime now = LocalDateTime.now();
@@ -397,22 +439,27 @@ public class SimpleServer extends AbstractServer {
                 int groupID = Integer.parseInt(message.split(",")[2]);
                 String sender = message.split(",")[3];
                 List<Users> managerFind = getAll(Users.class);
+                String receiver = "";
                 for (Users user : managerFind) {
                     if (user.getGroupID() == groupID && user.getTitle().equals("Manager")) {
-                        NotificationMessage notif = new NotificationMessage(1, "Task" + taskID + " was completed",
+                        receiver = user.getFullName();
+                        NotificationMessage notif = new NotificationMessage(messageCounter++, "Task" + taskID + " was completed",
                                 now, sender, user.getFullName());
                         add(notif);
                     }
                 }
                 modifyTask(Integer.parseInt(taskID), "Task Completed", "");
+                sendMessageToClient(receiver, NotificationMessage.class);
+                client.sendToClient(getAll(NotificationMessage.class));
             } else if (message.startsWith("TaskNotCompleted")) {
                 System.out.println("working 3");
                 LocalDateTime now = LocalDateTime.now();
                 String taskID = message.split(",")[1];
                 String user = message.split(",")[2];
-                NotificationMessage notif = new NotificationMessage(1, "Required update on Task" + taskID,
+                NotificationMessage notif = new NotificationMessage(messageCounter++, "Required update on Task" + taskID,
                         now, "Manager", user);
                 add(notif);
+                sendMessageToClient(user, NotificationMessage.class);
                 client.sendToClient(getAll(NotificationMessage.class));
             } else if (message.startsWith("logOut")) {
                 int userID = Integer.parseInt(message.split(",")[1]);
@@ -468,14 +515,13 @@ public class SimpleServer extends AbstractServer {
         }
     }
 
-    public void sendToAllClients(Task message) {
-        try {
-            for (SubscribedClient SubscribedClient : SubscribersList) {
-                SubscribedClient.getClient().sendToClient(message);
+    public <T> void sendMessageToClient(String receiver, Class<T> obj) throws IOException {
+        for(SubscribedClient client1 : SubscribersList){
+            Users user = (Users) client1.getClient().getInfo("User");
+            if(user!= null && user.getFullName().equals(receiver)){
+                System.out.println("hellooooo??");
+                client1.getClient().sendToClient(getAll(obj));
             }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-
         }
     }
 

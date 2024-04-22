@@ -48,6 +48,10 @@ public class PrimaryController implements Initializable, ServerResponseCallback 
     @FXML
     private ListView<String> MessageList;
 
+    public static PrimaryController instance;
+    public PrimaryController(){
+        instance = this;
+    }
     public static List<NotificationMessage> notifList = new ArrayList<>();
     private NotificationMessage selectedNotif;
     boolean TasksListJumper = false;
@@ -55,15 +59,24 @@ public class PrimaryController implements Initializable, ServerResponseCallback 
     boolean ReportsJumper = false;
     boolean MyTasksJumper = false;
     boolean UsersListJumper = false;
+    public static int reportCounter = 8;
 
+    public void initList(){
+        Platform.runLater(() -> {
+            if (!MessageList.getItems().isEmpty()) {
+                MessageList.getItems().clear();
+            }
+            for (NotificationMessage notif : notifList) {
+                if (notif.getReceiver().equals(currentUser.getFullName()) &&
+                        !notif.getSender().equals(currentUser.getFullName())) {
+                    this.MessageList.getItems().addAll(notif.getMessage());
+                }
+            }
+        });
+    }
     @FXML
     public void initialize(URL arg0, ResourceBundle arg1) {
-        for (NotificationMessage notif : notifList) {
-            if (notif.getReceiver().equals(currentUser.getFullName()) &&
-                    !notif.getSender().equals(currentUser.getFullName())) {
-                this.MessageList.getItems().addAll(notif.getMessage());
-            }
-        }
+        initList();
         this.MessageList.setOnMouseClicked(event -> {
             String selectedMessageName = this.MessageList.getSelectionModel().getSelectedItem();
             if (selectedMessageName != null) {
@@ -263,7 +276,7 @@ public class PrimaryController implements Initializable, ServerResponseCallback 
         double Ycoordinates = random.nextDouble();
         String location = "X Coordinates: " + Xcoordinates + " Y Cooredinates: " + Ycoordinates;
         App appInstance = App.getInstance();
-        appInstance.EmergencyClick("new report", 1, PrimaryController.currentUser.getUserID(),
-                PrimaryController.currentUser.getFullName(), location);
+        appInstance.EmergencyClick("report" + ++reportCounter, reportCounter, PrimaryController.currentUser.getUserID(),
+                PrimaryController.currentUser.getFullName(), location, PrimaryController.currentUser.getGroupID());
     }
 }
