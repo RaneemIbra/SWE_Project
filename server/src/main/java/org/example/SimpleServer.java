@@ -421,15 +421,22 @@ public class SimpleServer extends AbstractServer {
                 }
             } else if (message.startsWith("Message")) {
                 String notification;
+                String taskName;
+                int taskID;
                 if (message.startsWith("Message Decline")) {
                     notification = message.split(",")[3];
+                    taskName = message.split(",")[4];
+                    taskID = Integer.parseInt(message.split(",")[5]);
+
                 } else {
                     notification = "Task was accepted";
+                    taskName = message.split(",")[4];
+                    taskID = Integer.parseInt(message.split(",")[3]);
                 }
                 String sender = message.split(",")[1];
                 String receiver = message.split(",")[2];
                 LocalDateTime now = LocalDateTime.now();
-                NotificationMessage notif = new NotificationMessage(messageCounter++, notification, now, sender, receiver);
+                NotificationMessage notif = new NotificationMessage(messageCounter++,taskName, taskID,notification, now, sender, receiver);
                 add(notif);
                 sendMessageToClient(receiver, NotificationMessage.class);
                 client.sendToClient(getAll(NotificationMessage.class));
