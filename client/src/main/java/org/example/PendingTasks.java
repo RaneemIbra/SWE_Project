@@ -88,20 +88,23 @@ public class PendingTasks implements Initializable {
 
     @FXML
     void onAcceptTask(ActionEvent event) {
-        if (S1 != null) {
-            PendingTasks.getItems().remove(S1);
-        }
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Task Accepted");
-        alert.setHeaderText("Task Details: ");
-        alert.setContentText("Task was accepted");
-        alert.showAndWait();
-        try {
-            SimpleClient.getClient().sendToServer("Task Accepted," + task.getTaskID());
-            SimpleClient.getClient().sendToServer("Message Accept," + PrimaryController.currentUser.getFullName()
-                    + "," + task.getUserName());
-        }catch (IOException e){
-            e.printStackTrace();
+        if(task!=null){
+            if (S1 != null) {
+                PendingTasks.getItems().remove(S1);
+            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Task Accepted");
+            alert.setHeaderText("Task Details: ");
+            alert.setContentText("Task was accepted");
+            alert.showAndWait();
+            try {
+                SimpleClient.getClient().sendToServer("Task Accepted," + task.getTaskID());
+                SimpleClient.getClient().sendToServer("Message Accept," + PrimaryController.currentUser.getFullName()
+                        + "," + task.getUserName() + "," + task.getTaskID() + "," + task.getTaskName());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            task = null;
         }
     }
 
@@ -115,32 +118,35 @@ public class PendingTasks implements Initializable {
 
     @FXML
     void onDeclineTask(ActionEvent event) {
-        if (S1 != null) {
-            PendingTasks.getItems().remove(S1);
-        }
-        AtomicReference<String> Message = new AtomicReference<>("");
-        TextInputDialog Reason = new TextInputDialog();
-        Reason.setTitle("Declined Reason");
-        Reason.setHeaderText("Please enter the reason for declination:");
-        Optional<String> result1 = Reason.showAndWait();
-        result1.ifPresent(reason -> {
+        if(task!=null){
+            if (S1 != null) {
+                PendingTasks.getItems().remove(S1);
+            }
+            AtomicReference<String> Message = new AtomicReference<>("");
+            TextInputDialog Reason = new TextInputDialog();
+            Reason.setTitle("Declined Reason");
+            Reason.setHeaderText("Please enter the reason for declination:");
+            Optional<String> result1 = Reason.showAndWait();
+            result1.ifPresent(reason -> {
+                try {
+                    Message.set(reason);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Task Declined");
+            alert.setHeaderText("Task Details: ");
+            alert.setContentText("Task was declined");
+            alert.showAndWait();
             try {
-                Message.set(reason);
-            } catch (Exception e) {
+                SimpleClient.getClient().sendToServer("Task Declined," + task.getTaskID());
+                SimpleClient.getClient().sendToServer("Message Decline,"+ PrimaryController.currentUser.getFullName()
+                        + "," + task.getUserName() + "," + Message.get() + "," + task.getTaskName() + "," + task.getTaskID());
+            }catch (IOException e){
                 e.printStackTrace();
             }
-        });
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Task Declined");
-        alert.setHeaderText("Task Details: ");
-        alert.setContentText("Task was declined");
-        alert.showAndWait();
-        try {
-            SimpleClient.getClient().sendToServer("Task Declined," + task.getTaskID());
-            SimpleClient.getClient().sendToServer("Message Decline,"+ PrimaryController.currentUser.getFullName()
-                    + "," + task.getUserName() + "," + Message.get());
-        }catch (IOException e){
-            e.printStackTrace();
+            task = null;
         }
     }
 

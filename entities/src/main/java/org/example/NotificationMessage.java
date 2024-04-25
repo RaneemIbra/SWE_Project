@@ -16,12 +16,24 @@ public class NotificationMessage implements Serializable {
     LocalDateTime time;
     String sender;
     String receiver;
+    String taskName;
+    int taskID;
     public NotificationMessage(int messageID, String message, LocalDateTime time, String sender, String receiver) {
         this.messageID = messageID;
         this.message = message;
         this.time = time;
         this.sender= sender;
         this.receiver = receiver;
+    }
+
+    public NotificationMessage(int messageID,String taskName, int taskID , String message, LocalDateTime time, String sender, String receiver) {
+        this.messageID = messageID;
+        this.message = message;
+        this.time = time;
+        this.sender= sender;
+        this.receiver = receiver;
+        this.taskName = taskName;
+        this.taskID = taskID;
     }
 
     public NotificationMessage() {
@@ -42,6 +54,22 @@ public class NotificationMessage implements Serializable {
 
     public String getReceiver() {
         return receiver;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public int getTaskID() {
+        return taskID;
+    }
+
+    public void setTaskID(int taskID) {
+        this.taskID = taskID;
     }
 
     public void setReceiver(String receiver) {
@@ -74,7 +102,7 @@ public class NotificationMessage implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Message ID: %d\nSender: %s\nReceiver: %s\nMessage: %s\nSubmission Time: %s\n",
-                messageID,sender,receiver ,message, time);
+        return String.format("Message ID: %d\nSender: %s\nReceiver: %s\nMessage: %s\nSubmission Time: %s\nTask ID: %d\nTask Name: %s",
+                messageID,sender,receiver ,message, time, taskID, taskName);
     }
 }

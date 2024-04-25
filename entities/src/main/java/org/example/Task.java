@@ -129,8 +129,8 @@ public class Task implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Task ID: %d\nTask Description: %s\nUser Name: %s\nUser ID: " +
+        return String.format("Task ID: %d\nTask Name: %s\nTask Description: %s\nUser Name: %s\nUser ID: " +
                 "%d\nState: %s\nVolunteer: %s\nSubmission Time: %s\nDue Date: %s\nGroup: %d",
-                TaskID, TaskDescription, UserName, UserID, State, Volunteer, SubmissionTime, DueDate, UserGroupId);
+                TaskID, TaskName, TaskDescription, UserName, UserID, State, Volunteer, SubmissionTime, DueDate, UserGroupId);
     }
 }
