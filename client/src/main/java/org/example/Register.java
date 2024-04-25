@@ -183,6 +183,8 @@ public class Register implements Initializable,ServerResponseCallback  {
             exists = false;
         }
         Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Registration form");
             if(!exists){
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
@@ -191,10 +193,13 @@ public class Register implements Initializable,ServerResponseCallback  {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                System.out.println("Registered successfully");
+                alert.setHeaderText("Welcome");
+                alert.setContentText("Registered successfully");
             } else {
-                System.out.println("client already exists");
+                alert.setHeaderText("Error");
+                alert.setContentText("client already exists");
             }
+            alert.showAndWait();
         });
     }
 
