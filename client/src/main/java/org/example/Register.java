@@ -195,11 +195,9 @@ public class Register implements Initializable,ServerResponseCallback  {
                 }
                 alert.setHeaderText("Welcome");
                 alert.setContentText("Registered successfully");
-                System.out.println("Registered successfully");
             } else {
                 alert.setHeaderText("Error");
                 alert.setContentText("client already exists");
-                System.out.println("client already exists");
             }
             alert.showAndWait();
         });
