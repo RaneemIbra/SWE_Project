@@ -256,6 +256,7 @@ public class SimpleServer extends AbstractServer {
                 String taskid = message.split(",")[1];
                 String volunteer = message.split(",")[2];
                 modifyTask(Integer.parseInt(taskid), "TasksList", volunteer);
+                sendTasksToAll();
                 client.sendToClient(getAll(Task.class));
             } else if (message.equals("add client")) {
                 SubscribedClient connection = new SubscribedClient(client);
@@ -456,6 +457,7 @@ public class SimpleServer extends AbstractServer {
                     }
                 }
                 modifyTask(Integer.parseInt(taskID), "Task Completed", "");
+                sendTasksToAll();
                 sendMessageToClient(receiver, NotificationMessage.class);
                 client.sendToClient(getAll(NotificationMessage.class));
             } else if (message.startsWith("TaskNotCompleted")) {
@@ -526,10 +528,13 @@ public class SimpleServer extends AbstractServer {
         for(SubscribedClient client1 : SubscribersList){
             Users user = (Users) client1.getClient().getInfo("User");
             if(user!= null && user.getFullName().equals(receiver)){
-                System.out.println("hellooooo??");
                 client1.getClient().sendToClient(getAll(obj));
             }
         }
     }
-
+    public void sendTasksToAll() throws IOException {
+        for(SubscribedClient client1 : SubscribersList){
+            client1.getClient().sendToClient(getAll(Task.class));
+        }
+    }
 }
