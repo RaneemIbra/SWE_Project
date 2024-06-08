@@ -9,6 +9,7 @@ import java.io.IOException;
  */
 public class App {
     private static SimpleServer server;
+    //hello sigrid, nice to meet you
 
     public static void main(String[] args) throws Exception {
         server = new SimpleServer(3000);
